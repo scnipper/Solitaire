@@ -1,6 +1,4 @@
-package me.creese.soliter.entity;
-
-import javax.smartcardio.Card;
+package me.creese.solitaire.entity;
 
 public class DeckItem {
     private CardType type;

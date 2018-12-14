@@ -1,4 +1,4 @@
-package me.creese.soliter.entity;
+package me.creese.solitaire.entity;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 
@@ -10,8 +10,8 @@ public class PackCard extends Group {
 
     public static final int TOTAL_CARD = 52;
     private final Random random;
-    private final ArrayList<ArrayList<CardCell>> stackCard;
-    private ArrayList<DeckItem> deck;
+    private final ArrayList<ArrayList<me.creese.solitaire.entity.CardCell>> stackCard;
+    private ArrayList<me.creese.solitaire.entity.DeckItem> deck;
 
 
     public PackCard() {
@@ -26,10 +26,10 @@ public class PackCard extends Group {
     public void start() {
 
         for (int i = 0; i < 11; i++) {
-            stackCard.add(new ArrayList<CardCell>());
+            stackCard.add(new ArrayList<me.creese.solitaire.entity.CardCell>());
             if(i < 7) {
 
-                EmptyCard cardFirst = new EmptyCard(50 + (i * 230), 400, CardType.DIAMONDS, 1);
+                me.creese.solitaire.entity.EmptyCard cardFirst = new me.creese.solitaire.entity.EmptyCard(50 + (i * 230), 400, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
                 cardFirst.setStackNum(i);
                 cardFirst.posStack(0);
                 stackCard.get(i).add(cardFirst);
@@ -37,9 +37,9 @@ public class PackCard extends Group {
                 for (int j = 0; j < i + 1; j++) {
 
                     int indexDeck = random.nextInt(deck.size());
-                    DeckItem deckItem = deck.get(indexDeck);
+                    me.creese.solitaire.entity.DeckItem deckItem = deck.get(indexDeck);
 
-                    CardCell card = new CardCell(50 + (i * 230), 400 - (j * 40),
+                    me.creese.solitaire.entity.CardCell card = new me.creese.solitaire.entity.CardCell(50 + (i * 230), 400 - (j * 40),
                             deckItem.getType(), deckItem.getNumber());
                     deck.remove(indexDeck);
 
@@ -52,7 +52,7 @@ public class PackCard extends Group {
                     addActor(card);
                 }
             } else {
-                PlaceCard placeCard = new PlaceCard(900 + ((i-7) * 230), 800, CardType.DIAMONDS, 1);
+                PlaceCard placeCard = new PlaceCard(900 + ((i-7) * 230), 800, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
                 placeCard.setStackNum(i);
                 placeCard.posStack(0);
                 stackCard.get(i).add(placeCard);
@@ -60,16 +60,16 @@ public class PackCard extends Group {
             }
 
         }
-        ArrayList<CardCell> cardCells = new ArrayList<>();
+        ArrayList<me.creese.solitaire.entity.CardCell> cardCells = new ArrayList<>();
         stackCard.add(cardCells);
 
-        addActor(new EmptyCardDeck(50, 800, CardType.DIAMONDS, 1,11));
+        addActor(new me.creese.solitaire.entity.EmptyCardDeck(50, 800, me.creese.solitaire.entity.CardType.DIAMONDS, 1,11));
         for (int i = 0; i < deck.size(); i++) {
 
             int index = random.nextInt(deck.size());
-            DeckItem deckItem = deck.get(index);
+            me.creese.solitaire.entity.DeckItem deckItem = deck.get(index);
 
-            CardCell card = new CardCell(50, 800, deckItem.getType(), deckItem.getNumber());
+            me.creese.solitaire.entity.CardCell card = new me.creese.solitaire.entity.CardCell(50, 800, deckItem.getType(), deckItem.getNumber());
 
 
             card.setDrawBack(true);
@@ -92,14 +92,14 @@ public class PackCard extends Group {
 
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 4; j++) {
-                DeckItem deckItem = new DeckItem(CardType.getForNum(j),i+1);
+                me.creese.solitaire.entity.DeckItem deckItem = new me.creese.solitaire.entity.DeckItem(me.creese.solitaire.entity.CardType.getForNum(j),i+1);
                 deck.add(deckItem);
             }
         }
     }
 
 
-    public ArrayList<ArrayList<CardCell>> getStackCard() {
+    public ArrayList<ArrayList<me.creese.solitaire.entity.CardCell>> getStackCard() {
         return stackCard;
     }
 }

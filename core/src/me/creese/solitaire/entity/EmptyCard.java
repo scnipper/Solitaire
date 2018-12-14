@@ -1,10 +1,8 @@
-package me.creese.soliter.entity;
+package me.creese.solitaire.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import me.creese.soliter.entity.impl.Card;
-
-public class EmptyCard extends CardCell {
+public class EmptyCard extends me.creese.solitaire.entity.CardCell {
     public EmptyCard(float x, float y, CardType cardType, int numberCard) {
         super(x, y, cardType, numberCard);
         texture = new Texture("cards/c_place.png");

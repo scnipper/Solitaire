@@ -1,13 +1,11 @@
-package me.creese.soliter.entity;
+package me.creese.solitaire.entity;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
 
-import me.creese.soliter.entity.impl.Card;
-
-public class CardCell extends Card {
+public class CardCell extends me.creese.solitaire.entity.impl.Card {
 
 
     private int stackNum;

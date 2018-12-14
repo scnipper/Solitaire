@@ -1,4 +1,4 @@
-package me.creese.soliter.entity.impl;
+package me.creese.solitaire.entity.impl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
-import me.creese.soliter.entity.CardType;
+import me.creese.solitaire.entity.CardType;
 
 public class Card extends Actor {
     public static final int RED_CARD = 0;

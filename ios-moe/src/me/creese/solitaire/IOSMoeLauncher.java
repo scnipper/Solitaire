@@ -1,9 +1,8 @@
-package me.creese.soliter;
+package me.creese.solitaire;
 
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import org.moe.natj.general.Pointer;
-import me.creese.soliter.Launch;
 
 import apple.uikit.c.UIKit;
 

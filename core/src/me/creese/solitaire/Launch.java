@@ -1,24 +1,23 @@
-package me.creese.soliter;
+package me.creese.solitaire;
 
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import me.creese.soliter.screens.GameScreen;
 import me.creese.util.display.Display;
 
 public class Launch extends Display {
 
     @Override
     public void create() {
-        addListGameViews(new GameScreen(this));
+        addListGameViews(new me.creese.solitaire.screens.GameScreen(this));
 
-        showGameView(GameScreen.class);
+        showGameView(me.creese.solitaire.screens.GameScreen.class);
     }
 
 
     @Override
     public void resize(int i, int i1) {
-        for (Stage stage : getGameViewForName(GameScreen.class).getStages()) {
+        for (Stage stage : getGameViewForName(me.creese.solitaire.screens.GameScreen.class).getStages()) {
             stage.getViewport().update(i,i1);
         }
     }

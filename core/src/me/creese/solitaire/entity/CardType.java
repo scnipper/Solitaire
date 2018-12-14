@@ -1,4 +1,4 @@
-package me.creese.soliter.entity;
+package me.creese.solitaire.entity;
 
 public enum CardType {
     CLUBS,

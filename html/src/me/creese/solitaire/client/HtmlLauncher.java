@@ -1,9 +1,9 @@
-package me.creese.soliter.client;
+package me.creese.solitaire.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import me.creese.soliter.Launch;
+import me.creese.solitaire.Launch;
 
 public class HtmlLauncher extends GwtApplication {
 

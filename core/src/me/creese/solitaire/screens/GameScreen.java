@@ -1,4 +1,4 @@
-package me.creese.soliter.screens;
+package me.creese.solitaire.screens;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import me.creese.soliter.entity.PackCard;
-import me.creese.soliter.util.P;
+import me.creese.solitaire.entity.PackCard;
+import me.creese.solitaire.util.P;
 import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 

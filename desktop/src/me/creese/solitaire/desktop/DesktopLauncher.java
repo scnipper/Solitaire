@@ -1,8 +1,8 @@
-package me.creese.soliter.desktop;
+package me.creese.solitaire.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import me.creese.soliter.Launch;
+import me.creese.solitaire.Launch;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

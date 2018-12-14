@@ -1,4 +1,4 @@
-package me.creese.soliter.util;
+package me.creese.solitaire.util;
 
 public class P {
     public static final int WIDTH = 1920;
