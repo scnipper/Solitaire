@@ -8,34 +8,35 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import me.creese.solitaire.entity.PackCard;
+import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.util.P;
 import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 
 public class GameScreen extends GameView {
-    private final PackCard packCard;
+
+
+    private BaseGame baseGame;
 
     public GameScreen(Display root) {
-        super(new FitViewport(P.WIDTH,P.HEIGHT), root);
+        super(new FitViewport(P.WIDTH, P.HEIGHT), root);
 
-        Stage stage = new Stage(new FillViewport(P.WIDTH,P.HEIGHT));
-        addStage(stage,0);
+        Stage stage = new Stage(new FillViewport(P.WIDTH, P.HEIGHT));
+        addStage(stage, 0);
 
         final Texture back = new Texture("back.png");
-        back.setWrap(Texture.TextureWrap.Repeat,Texture.TextureWrap.Repeat);
+        back.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         final TextureRegion region = new TextureRegion(back);
-        region.setRegion(0,0,P.WIDTH,P.HEIGHT);
-        stage.addActor(new Actor(){
+        region.setRegion(0, 0, P.WIDTH, P.HEIGHT);
+        stage.addActor(new Actor() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
 
-                batch.draw(region,0,0);
+                batch.draw(region, 0, 0);
             }
         });
-        packCard = new PackCard();
-        addActor(packCard);
+
 
     }
 
@@ -44,7 +45,16 @@ public class GameScreen extends GameView {
         super.addRoot(display);
 
         if (display != null) {
-            packCard.start();
+            addActor(baseGame);
+            baseGame.start();
         }
+    }
+
+    public BaseGame getBaseGame() {
+        return baseGame;
+    }
+
+    public void setBaseGame(BaseGame baseGame) {
+        this.baseGame = baseGame;
     }
 }

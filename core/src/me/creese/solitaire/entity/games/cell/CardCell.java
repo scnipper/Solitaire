@@ -1,9 +1,11 @@
-package me.creese.solitaire.entity;
+package me.creese.solitaire.entity.games.cell;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
+
+import me.creese.solitaire.entity.CardType;
 
 public class CardCell extends me.creese.solitaire.entity.impl.Card {
 
@@ -19,7 +21,7 @@ public class CardCell extends me.creese.solitaire.entity.impl.Card {
 
     private void checkPosition() {
 
-        PackCard parent = (PackCard) getParent();
+        CellGame parent = (CellGame) getParent();
         ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
         ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
 
@@ -129,7 +131,7 @@ public class CardCell extends me.creese.solitaire.entity.impl.Card {
         if(getActions().size > 0) return;
 
         if(this instanceof EmptyCardDeck) {
-            ArrayList<CardCell> cells = ((PackCard) getParent()).getStackCard().get(stackNum);
+            ArrayList<CardCell> cells = ((CellGame) getParent()).getStackCard().get(stackNum);
             if(checkEmptyDeck(cells)) {
                 for (CardCell cell : cells) {
                     cell.addAction(Actions.moveBy(-230,0,0.3f));
@@ -144,7 +146,7 @@ public class CardCell extends me.creese.solitaire.entity.impl.Card {
         }
 
         if(!dontMoveStack) {
-            ArrayList<CardCell> cells = ((PackCard) getParent()).getStackCard().get(stackNum);
+            ArrayList<CardCell> cells = ((CellGame) getParent()).getStackCard().get(stackNum);
             for (int i = posInStack; i < cells.size(); i++) {
                 cells.get(i).setZIndex(9999);
             }
@@ -181,7 +183,7 @@ public class CardCell extends me.creese.solitaire.entity.impl.Card {
     @Override
     protected void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
         if (!isMove()) return;
-        PackCard parent = (PackCard) getParent();
+        CellGame parent = (CellGame) getParent();
 
         if (!dontMoveStack) {
             ArrayList<CardCell> stack = parent.getStackCard().get(stackNum);

@@ -1,4 +1,6 @@
-package me.creese.solitaire.entity;
+package me.creese.solitaire.entity.games.cell;
+
+import me.creese.solitaire.entity.CardType;
 
 public class DeckItem {
     private CardType type;
