@@ -54,7 +54,7 @@ public class CellGame extends BaseGame {
                     addActor(card);
                 }
             } else {
-                PlaceCard placeCard = new PlaceCard(900 + ((i-7) * 230), 800, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
+                PlaceCard placeCard = new PlaceCard(900 + ((i-7) * 230), 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
                 placeCard.setStackNum(i);
                 placeCard.posStack(0);
                 stackCard.get(i).add(placeCard);
@@ -65,13 +65,13 @@ public class CellGame extends BaseGame {
         ArrayList<CardCell> cardCells = new ArrayList<>();
         stackCard.add(cardCells);
 
-        addActor(new EmptyCardDeck(50, 800, me.creese.solitaire.entity.CardType.DIAMONDS, 1,11));
+        addActor(new EmptyCardDeck(50, 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1,11));
         for (int i = 0; i < deck.size(); i++) {
 
             int index = random.nextInt(deck.size());
             DeckItem deckItem = deck.get(index);
 
-            CardCell card = new CardCell(50, 800, deckItem.getType(), deckItem.getNumber());
+            CardCell card = new CardCell(50, 750, deckItem.getType(), deckItem.getNumber());
 
 
             card.setDrawBack(true);
