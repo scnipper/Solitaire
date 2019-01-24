@@ -9,7 +9,8 @@ import me.creese.solitaire.entity.impl.BaseGame;
 
 public class CellGame extends BaseGame {
 
-    public static final int TOTAL_CARD = 52;
+    public static final int CARD_DECK_NUM = 11;
+    public static final int DECK_SIZE = 24 ;
     private final Random random;
     private final ArrayList<ArrayList<CardCell>> stackCard;
     private ArrayList<DeckItem> deck;
@@ -22,6 +23,10 @@ public class CellGame extends BaseGame {
         stackCard = new ArrayList<>();
         createDeck();
 
+    }
+
+    public ArrayList<DeckItem> getDeck() {
+        return deck;
     }
 
     @Override
@@ -66,6 +71,7 @@ public class CellGame extends BaseGame {
         stackCard.add(cardCells);
 
         addActor(new EmptyCardDeck(50, 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1,11));
+
         for (int i = 0; i < deck.size(); i++) {
 
             int index = random.nextInt(deck.size());
@@ -103,6 +109,7 @@ public class CellGame extends BaseGame {
                 deck.add(deckItem);
             }
         }
+
     }
 
 

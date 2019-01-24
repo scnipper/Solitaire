@@ -129,4 +129,9 @@ public class Card extends Actor {
         } else batch.draw(texture, getX(), getY());
 
     }
+
+    @Override
+    public String toString() {
+        return "Card{" + "numberCard=" + numberCard + ", cardType=" + cardType + '}';
+    }
 }
