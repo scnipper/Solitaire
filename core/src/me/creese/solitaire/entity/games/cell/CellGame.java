@@ -25,9 +25,6 @@ public class CellGame extends BaseGame {
 
     }
 
-    public ArrayList<DeckItem> getDeck() {
-        return deck;
-    }
 
     @Override
     public void start() {

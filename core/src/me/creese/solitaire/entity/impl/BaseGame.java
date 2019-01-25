@@ -6,10 +6,17 @@ import me.creese.solitaire.menu.TopScoreView;
 
 public abstract class BaseGame extends Group {
 
+    private final TopScoreView topScoreView;
+
     public BaseGame() {
-        addActor(new TopScoreView());
+        topScoreView = new TopScoreView();
+        addActor(topScoreView);
     }
 
     public abstract void start();
     public abstract void restart();
+
+    public TopScoreView getTopScoreView() {
+        return topScoreView;
+    }
 }

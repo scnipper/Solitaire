@@ -42,12 +42,15 @@ public class CardCell extends Card {
             }
         }
 
-        int minus = 0;
+
         if(stackNum == CellGame.CARD_DECK_NUM) {
-            minus = CellGame.DECK_SIZE-stackCard.get(stackNum).size();
+            ArrayList<CardCell> stack = stackCard.get(stackNum);
+            for (int i = 0; i < stack.size(); i++) {
+                stack.get(i).posStack(i);
+            }
         }
 
-        for (int i = posInStack-minus; i < stackCard.get(stackNum).size(); i++) {
+        for (int i = posInStack; i < stackCard.get(stackNum).size(); i++) {
             stackCard.get(stackNum).get(i).addAction(Actions.moveTo(stackCard.get(stackNum).get(i).getStartPos().x, stackCard.get(stackNum).get(i).getStartPos().y, 0.2f));
         }
 
