@@ -29,6 +29,7 @@ public class CellGame extends BaseGame {
     @Override
     public void start() {
 
+        getTopScoreView().startTime();
         for (int i = 0; i < 11; i++) {
             stackCard.add(new ArrayList<CardCell>());
             if(i < 7) {

@@ -37,13 +37,13 @@ public class CardCell extends Card {
             CardCell child = cells.get(cells.size() - 1);
             if (checkBounds(child)) {
 
-                if(moveToPosition(i,child,cells)) break;
+                if (moveToPosition(i, child, cells)) break;
 
             }
         }
 
 
-        if(stackNum == CellGame.CARD_DECK_NUM) {
+        if (stackNum == CellGame.CARD_DECK_NUM) {
             ArrayList<CardCell> stack = stackCard.get(stackNum);
             for (int i = 0; i < stack.size(); i++) {
                 stack.get(i).posStack(i);
@@ -58,19 +58,23 @@ public class CardCell extends Card {
 
     /**
      * Перемещение карты на позицию
+     *
      * @param num
      * @param child
      * @param cells
      * @return
      */
     private boolean moveToPosition(int num, CardCell child, ArrayList<CardCell> cells) {
-        ArrayList<ArrayList<CardCell>> stackCard = ((CellGame) getParent()).getStackCard();
+        CellGame parent = (CellGame) getParent();
+        ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
         ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
-        if (child.getNumberCard() == prevCard && !child.isDrawBack() &&
-                (num >= 7 || child.getColorCard() != getColorCard())
-                && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
+        if (child.getNumberCard() == prevCard && !child.isDrawBack() && (num >= 7 || child.getColorCard() != getColorCard()) && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
 
+            parent.getTopScoreView().iterateStep();
+            if(num > 7)
+            parent.getTopScoreView().addScore(20);
+            else parent.getTopScoreView().addScore((getNumberCard()*2)+5);
             if (getPosInStack() > 1 && !dontMoveStack) {
                 tmpStack.get(getPosInStack() - 1).setDrawBack(false);
                 tmpStack.get(getPosInStack() - 1).setMove(true);
@@ -101,7 +105,6 @@ public class CardCell extends Card {
             dontMoveStack = false;
 
 
-
             return true;
         }
         return false;
@@ -117,7 +120,7 @@ public class CardCell extends Card {
         for (int i = 0; i < stackCard.size(); i++) {
             ArrayList<CardCell> cells = stackCard.get(i);
             CardCell child = cells.get(cells.size() - 1);
-            if(moveToPosition(i,child,cells)) break;
+            if (moveToPosition(i, child, cells)) break;
         }
 
         for (int i = posInStack; i < stackCard.get(stackNum).size(); i++) {
@@ -221,6 +224,7 @@ public class CardCell extends Card {
             getStartPos().add(230, 0);
             setZIndex(9999);
             deckMode = false;
+            ((CellGame) getParent()).getTopScoreView().iterateStep();
         } else {
             checkPosition();
         }

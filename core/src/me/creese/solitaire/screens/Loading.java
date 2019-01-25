@@ -4,16 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -22,7 +18,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import me.creese.solitaire.CardsGames;
 import me.creese.solitaire.util.P;
-import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 
 
@@ -35,9 +30,8 @@ public class Loading extends GameView {
     public static final String FONT_LIGHT = "fonts/font_light.fnt";
 
 
-
     public Loading(CardsGames root) {
-        super(new FitViewport(P.WIDTH, P.HEIGHT),root);
+        super(new FitViewport(P.WIDTH, P.HEIGHT), root);
         setBackgroundColor(Color.WHITE);
         addActor(new LogoDraw(root));
         load();
@@ -56,10 +50,9 @@ public class Loading extends GameView {
         paramFont.magFilter = Texture.TextureFilter.Linear;
         paramFont.minFilter = Texture.TextureFilter.Linear;
 
-        P.get().asset.load(FONT_LIGHT, BitmapFont.class,paramFont);
+        P.get().asset.load(FONT_LIGHT, BitmapFont.class, paramFont);
 
     }
-
 
 
     class LogoDraw extends Group {
@@ -80,14 +73,13 @@ public class Loading extends GameView {
             SequenceAction sequence = new SequenceAction();
             sequence.addAction(Actions.delay(0.3f));
 
-            sequence.addAction(Actions.color(Color.WHITE,1.5f));
+            sequence.addAction(Actions.color(Color.WHITE, 0.5f));
 
             addAction(sequence);
 
             setColor(new Color(0));
             //splash.setColor(getColor());
-            splash.setPosition(P.WIDTH / 2 - (splash.getWidth() / 2),
-                    P.HEIGHT / 2 - (splash.getHeight() / 2));
+            splash.setPosition(P.WIDTH / 2 - (splash.getWidth() / 2), P.HEIGHT / 2 - (splash.getHeight() / 2));
         }
 
         @Override
@@ -103,14 +95,13 @@ public class Loading extends GameView {
                 if (P.get().asset.update()) {
 
                     if (getActions().size == 0 && !drawBar) {
-                        addAction(Actions.color(new Color(0),1));
+                        addAction(Actions.color(new Color(0), 1));
                         drawBar = true;
 
                     }
 
                 }
-            }
-            catch (GdxRuntimeException e) {
+            } catch (GdxRuntimeException e) {
                 e.printStackTrace();
             }
 
