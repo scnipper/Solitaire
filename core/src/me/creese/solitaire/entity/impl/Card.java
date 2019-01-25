@@ -59,7 +59,8 @@ public class Card extends Actor {
 
     protected void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
         if (isMove) {
-            setPosition(event.getStageX() - startTouch.x, event.getStageY() - startTouch.y);
+
+            moveBy(deltaX , deltaY );
         }
     }
 
