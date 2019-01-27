@@ -12,14 +12,17 @@ import me.creese.solitaire.entity.CardType;
 public class Card extends Actor {
     public static final int RED_CARD = 0;
     public static final int BLACK_CARD = 1;
-    private int numberCard;
+    public static final int DOUBLE_CLICK_TIME = 500; // ms
     private final CardType cardType;
     private final Vector2 startTouch;
     private final Vector2 startPos;
-    protected Texture texture;
     private final Texture textureBack;
+    protected Texture texture;
+    private int numberCard;
     private boolean isMove;
     private boolean drawBack;
+    private boolean lock;
+    private long startTimeDown;
 
     public Card(float x, float y, CardType cardType, int numberCard) {
         this.numberCard = numberCard;
@@ -35,13 +38,35 @@ public class Card extends Actor {
         addListener(new ActorGestureListener() {
 
             @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                System.out.println(count);
+                if (lock) {
+                    return;
+                }
+                if (count >= 2) doubleClick();
+                /*if (startTimeDown > 0) {
+                    long time = System.currentTimeMillis() - startTimeDown;
+                    System.out.println(time);
+                    if (time <= DOUBLE_CLICK_TIME) {
+                        doubleClick();
+                        startTimeDown = 0;
+                    } else {
+                        startTimeDown = 0;
+                    }
+                } else startTimeDown = System.currentTimeMillis();*/
+            }
+
+
+            @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (lock) return;
                 Card.this.touchDown(event, x, y);
 
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (lock) return;
                 Card.this.touchUp(event, x, y);
 
 
@@ -49,18 +74,21 @@ public class Card extends Actor {
 
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-
-                Card.this.pan(event,x,y,deltaX,deltaY);
+                if (lock) return;
+                Card.this.pan(event, x, y, deltaX, deltaY);
             }
         });
 
 
     }
 
+    public void doubleClick() {
+    }
+
     protected void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
         if (isMove) {
 
-            moveBy(deltaX , deltaY );
+            moveBy(deltaX, deltaY);
         }
     }
 
@@ -71,7 +99,7 @@ public class Card extends Actor {
     protected void touchDown(InputEvent event, float x, float y) {
         if (isMove) {
             startTouch.set(x, y);
-            setZIndex(99);
+            setZIndex(99999);
         }
     }
 
@@ -81,11 +109,12 @@ public class Card extends Actor {
     }
 
     public int getColorCard() {
-        if(cardType.equals(CardType.DIAMONDS) || cardType.equals(CardType.HEARTS)) {
+        if (cardType.equals(CardType.DIAMONDS) || cardType.equals(CardType.HEARTS)) {
             return RED_CARD;
         }
         return BLACK_CARD;
     }
+
     public boolean isMove() {
         return isMove;
     }
@@ -110,6 +139,9 @@ public class Card extends Actor {
         return numberCard;
     }
 
+    public void setNumberCard(int numberCard) {
+        this.numberCard = numberCard;
+    }
 
     public Vector2 getStartPos() {
         return startPos;
@@ -119,8 +151,8 @@ public class Card extends Actor {
         return startTouch;
     }
 
-    public void setNumberCard(int numberCard) {
-        this.numberCard = numberCard;
+    public void setLock(boolean lock) {
+        this.lock = lock;
     }
 
     @Override
