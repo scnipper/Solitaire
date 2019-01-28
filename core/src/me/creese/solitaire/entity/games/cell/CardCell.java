@@ -2,7 +2,6 @@ package me.creese.solitaire.entity.games.cell;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 
 import java.util.ArrayList;
 
@@ -10,7 +9,6 @@ import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.Card;
 
 public class CardCell extends Card {
-
 
 
     private int stackNum;
@@ -40,7 +38,7 @@ public class CardCell extends Card {
             if (cells.size() == 0) continue;
             CardCell child = cells.get(cells.size() - 1);
             if (checkBounds(child)) {
-                if (tryMoveToPosition(i, child)){
+                if (tryMoveToPosition(i, child)) {
 
                     break;
                 }
@@ -71,8 +69,6 @@ public class CardCell extends Card {
 
         if (startIndex == -1) startIndex = posInStack;
         setLock(true);
-
-        System.out.println("move to "+getStartPos());
         addAction(Actions.sequence(Actions.moveTo(getStartPos().x, getStartPos().y, 0.2f + (0.05f * (posInStack - startIndex))), Actions.run(new Runnable() {
             @Override
             public void run() {
@@ -106,7 +102,6 @@ public class CardCell extends Card {
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
         if (child.getNumberCard() == prevCard && !child.isDrawBack() && (num >= 7 || child.getColorCard() != getColorCard()) && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
 
-            System.out.println("карта помещена в " +num+ "\n"+child);
             if (num >= 7) {
                 // поместить на конечный стек карту можно только если она в самом конце стека
                 if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM)
@@ -117,7 +112,7 @@ public class CardCell extends Card {
             parent.getTopScoreView().iterateStep();
 
 
-            if (posInStack > 1 && posInStack <=tmpStack.size() && !dontMoveStack) {
+            if (posInStack > 1 && posInStack <= tmpStack.size() && !dontMoveStack) {
                 tmpStack.get(posInStack - 1).setDrawBack(false);
                 tmpStack.get(posInStack - 1).setMove(true);
             }
@@ -134,7 +129,6 @@ public class CardCell extends Card {
                 tmpStack.get(j).setStackNum(child.getStackNum());
                 cells.add(tmpStack.get(j));
                 tmpStack.get(j).posStack(cells.size() - 1);
-                System.out.println("позиция задана "+tmpStack.get(j).getStartPos());
                 tmpStack.remove(j);
                 j--;
 
@@ -170,16 +164,15 @@ public class CardCell extends Card {
             for (int i = stackCard.size() - 2; i >= 0; i--) {
                 ArrayList<CardCell> cells = stackCard.get(i);
                 CardCell child = cells.get(cells.size() - 1);
-                if (tryMoveToPosition(i, child)){
+                if (tryMoveToPosition(i, child)) {
                     isMoveToStart = true;
                     break;
                 }
             }
-            if(tmpStackCardNum == CellGame.CARD_DECK_NUM) {
+            if (tmpStackCardNum == CellGame.CARD_DECK_NUM) {
                 ((CellGame) getParent()).updateDeckIndex();
             }
-            if(isMoveToStart)
-            moveToStartPosition();
+            if (isMoveToStart) moveToStartPosition();
         }
     }
 
@@ -269,7 +262,7 @@ public class CardCell extends Card {
         // если в колоде
         if (deckMode) {
             openCardInDeck();
-        } else if(movingCard){
+        } else if (movingCard) {
             checkPosition();
         }
 

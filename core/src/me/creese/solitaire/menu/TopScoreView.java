@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Align;
 
 import me.creese.solitaire.screens.Loading;
@@ -30,7 +29,7 @@ public class TopScoreView extends Actor {
         textureBack = new Texture(pix);
         pix.dispose();
 
-        font = P.get().asset.get(Loading.FONT_LIGHT,BitmapFont.class);
+        font = P.get().asset.get(Loading.FONT_ROBOTO,BitmapFont.class);
     }
 
     /**

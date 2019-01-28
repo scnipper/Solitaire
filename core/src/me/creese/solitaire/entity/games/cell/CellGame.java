@@ -207,6 +207,11 @@ public class CellGame extends BaseGame {
 
     }
 
+    @Override
+    public void cancelStep() {
+        System.out.println("cancel step");
+    }
+
     private void stepBuildCards() {
 
 

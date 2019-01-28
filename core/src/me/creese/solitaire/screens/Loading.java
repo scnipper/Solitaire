@@ -27,7 +27,7 @@ import me.creese.util.display.GameView;
 
 public class Loading extends GameView {
 
-    public static final String FONT_LIGHT = "fonts/font_light.fnt";
+    public static final String FONT_ROBOTO = "fonts/font_light.fnt";
 
 
     public Loading(CardsGames root) {
@@ -50,7 +50,7 @@ public class Loading extends GameView {
         paramFont.magFilter = Texture.TextureFilter.Linear;
         paramFont.minFilter = Texture.TextureFilter.Linear;
 
-        P.get().asset.load(FONT_LIGHT, BitmapFont.class, paramFont);
+        P.get().asset.load(FONT_ROBOTO, BitmapFont.class, paramFont);
 
     }
 
