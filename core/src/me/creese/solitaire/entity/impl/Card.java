@@ -39,7 +39,6 @@ public class Card extends Actor {
 
             @Override
             public void tap(InputEvent event, float x, float y, int count, int button) {
-                System.out.println(count);
                 if (lock) {
                     return;
                 }

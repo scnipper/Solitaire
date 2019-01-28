@@ -238,12 +238,13 @@ public class CellGame extends BaseGame {
                             if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false)) {
                                 cardDeck.setZIndex(9999);
                                 cardDeck.moveToStartPosition();
-                                updateDeckIndex();
+
                                 isEnd = false;
                                 break;
                             } else {
                                 isEnd = true;
                             }
+                            updateDeckIndex();
 
                         }
                         if (isEnd) {
@@ -362,6 +363,7 @@ public class CellGame extends BaseGame {
     }
 
     public void updateDeckIndex() {
+        System.out.println("update index");
         ArrayList<CardCell> stack = stackCard.get(CARD_DECK_NUM);
         for (int i = 0; i < stack.size(); i++) {
             stack.get(i).posStack(i);
@@ -396,6 +398,8 @@ public class CellGame extends BaseGame {
             cell.setDeckMode(true);
             cell.setDrawBack(true);
             cell.setMove(false);
+            cell.posStack(i);
+
         }
     }
 

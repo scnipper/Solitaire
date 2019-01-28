@@ -2,6 +2,7 @@ package me.creese.solitaire.entity.games.cell;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 
 import java.util.ArrayList;
 
@@ -32,23 +33,25 @@ public class CardCell extends Card {
         CellGame parent = (CellGame) getParent();
         ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
 
+        int tmpStackNum = stackNum;
 
         for (int i = 0; i < stackCard.size() - 1; i++) {
             ArrayList<CardCell> cells = stackCard.get(i);
             if (cells.size() == 0) continue;
             CardCell child = cells.get(cells.size() - 1);
             if (checkBounds(child)) {
-                if (tryMoveToPosition(i, child)) break;
+                if (tryMoveToPosition(i, child)){
+
+                    break;
+                }
 
             }
         }
 
-
-        if (stackNum == CellGame.CARD_DECK_NUM) {
+        if (tmpStackNum == CellGame.CARD_DECK_NUM) {
             parent.updateDeckIndex();
-
-
         }
+
 
         moveToStartPosition();
 
@@ -68,6 +71,8 @@ public class CardCell extends Card {
 
         if (startIndex == -1) startIndex = posInStack;
         setLock(true);
+
+        System.out.println("move to "+getStartPos());
         addAction(Actions.sequence(Actions.moveTo(getStartPos().x, getStartPos().y, 0.2f + (0.05f * (posInStack - startIndex))), Actions.run(new Runnable() {
             @Override
             public void run() {
@@ -101,15 +106,18 @@ public class CardCell extends Card {
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
         if (child.getNumberCard() == prevCard && !child.isDrawBack() && (num >= 7 || child.getColorCard() != getColorCard()) && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
 
-
+            System.out.println("карта помещена в " +num+ "\n"+child);
             if (num >= 7) {
                 // поместить на конечный стек карту можно только если она в самом конце стека
                 if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM)
                     return false;
                 parent.getTopScoreView().addScore(20);
             } else parent.getTopScoreView().addScore((getNumberCard() * 2) + 5);
+
             parent.getTopScoreView().iterateStep();
-            if (posInStack > 1 && !dontMoveStack) {
+
+
+            if (posInStack > 1 && posInStack <=tmpStack.size() && !dontMoveStack) {
                 tmpStack.get(posInStack - 1).setDrawBack(false);
                 tmpStack.get(posInStack - 1).setMove(true);
             }
@@ -126,8 +134,10 @@ public class CardCell extends Card {
                 tmpStack.get(j).setStackNum(child.getStackNum());
                 cells.add(tmpStack.get(j));
                 tmpStack.get(j).posStack(cells.size() - 1);
+                System.out.println("позиция задана "+tmpStack.get(j).getStartPos());
                 tmpStack.remove(j);
                 j--;
+
                 // если карта в колоде
                 if (n == CellGame.CARD_DECK_NUM) {
 
@@ -155,12 +165,20 @@ public class CardCell extends Card {
 
 
             ArrayList<ArrayList<CardCell>> stackCard = ((CellGame) getParent()).getStackCard();
-
+            boolean isMoveToStart = false;
+            int tmpStackCardNum = stackNum;
             for (int i = stackCard.size() - 2; i >= 0; i--) {
                 ArrayList<CardCell> cells = stackCard.get(i);
                 CardCell child = cells.get(cells.size() - 1);
-                if (tryMoveToPosition(i, child)) break;
+                if (tryMoveToPosition(i, child)){
+                    isMoveToStart = true;
+                    break;
+                }
             }
+            if(tmpStackCardNum == CellGame.CARD_DECK_NUM) {
+                ((CellGame) getParent()).updateDeckIndex();
+            }
+            if(isMoveToStart)
             moveToStartPosition();
         }
     }
@@ -222,8 +240,9 @@ public class CardCell extends Card {
         ArrayList<CardCell> cells = ((CellGame) getParent()).getStackCard().get(stackNum);
         if (this instanceof EmptyCardDeck) {
 
-            CellGame parent = (CellGame) getParent();
+            final CellGame parent = (CellGame) getParent();
             if (parent.checkEmptyDeck()) {
+
                 parent.restartDeck();
             }
             return;
