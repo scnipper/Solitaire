@@ -67,6 +67,10 @@ public class TopScoreView extends Actor {
         step++;
     }
 
+    public void decrementStep() {
+        step--;
+    }
+
     public void startTime() {
         time = 0;
         timeStart = true;

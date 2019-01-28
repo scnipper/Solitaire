@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import me.creese.solitaire.entity.CardType;
@@ -19,12 +20,15 @@ public class CellGame extends BaseGame {
     public static final int DECK_SIZE = 24;
     private final Random random;
     private final ArrayList<ArrayList<CardCell>> stackCard;
+    // история ходов
+    private final LinkedList<Runnable> steps;
     private ArrayList<DeckItem> deck;
 
 
     public CellGame() {
         random = new Random();
 
+        steps = new LinkedList<>();
 
         stackCard = new ArrayList<>();
         createDeck();
@@ -34,7 +38,7 @@ public class CellGame extends BaseGame {
 
     @Override
     public void start() {
-
+        steps.clear();
         getTopScoreView().startTime();
         for (int i = 0; i < 11; i++) {
             stackCard.add(new ArrayList<CardCell>());
@@ -202,6 +206,10 @@ public class CellGame extends BaseGame {
 
     }
 
+    public LinkedList<Runnable> getSteps() {
+        return steps;
+    }
+
     @Override
     public void restart() {
 
@@ -209,7 +217,10 @@ public class CellGame extends BaseGame {
 
     @Override
     public void cancelStep() {
-        System.out.println("cancel step");
+        if(steps.size() > 0) {
+            Runnable runnable = steps.pop();
+            runnable.run();
+        }
     }
 
     private void stepBuildCards() {
@@ -368,7 +379,6 @@ public class CellGame extends BaseGame {
     }
 
     public void updateDeckIndex() {
-        System.out.println("update index");
         ArrayList<CardCell> stack = stackCard.get(CARD_DECK_NUM);
         for (int i = 0; i < stack.size(); i++) {
             stack.get(i).posStack(i);
@@ -385,6 +395,7 @@ public class CellGame extends BaseGame {
 
     public void restartDeck() {
         final ArrayList<CardCell> cardCells = stackCard.get(CARD_DECK_NUM);
+
         for (int i = 0; i < cardCells.size(); i++) {
             final CardCell cell = cardCells.get(i);
             cell.setLock(true);
@@ -406,6 +417,32 @@ public class CellGame extends BaseGame {
             cell.posStack(i);
 
         }
+
+        steps.push(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < cardCells.size(); i++) {
+                    final CardCell cell = cardCells.get(i);
+                    cell.setLock(true);
+                    cell.addAction(Actions.sequence(Actions.moveBy(230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(cell.getPosInStack() == cardCells.size()-1) {
+
+                                lockCards(false);
+
+                            }
+                        }
+                    })));
+                    cell.getStartPos().add(230, 0);
+                    cell.setZIndex(0);
+                    cell.setDeckMode(false);
+                    cell.setDrawBack(false);
+                    cell.setMove(true);
+
+                }
+            }
+        });
     }
 
 

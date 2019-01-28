@@ -95,27 +95,74 @@ public class CardCell extends Card {
      * @return
      */
     public boolean tryMoveToPosition(int num, CardCell child, boolean isCheckToAuto) {
-        CellGame parent = (CellGame) getParent();
+        final CellGame parent = (CellGame) getParent();
         ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
-        ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
-        ArrayList<CardCell> cells = stackCard.get(child.getStackNum());
+        final ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
+        final ArrayList<CardCell> cells = stackCard.get(child.getStackNum());
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
         if (child.getNumberCard() == prevCard && !child.isDrawBack() && (num >= 7 || child.getColorCard() != getColorCard()) && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
 
+            final int numScoreAdd;
             if (num >= 7) {
                 // поместить на конечный стек карту можно только если она в самом конце стека
                 if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM)
                     return false;
-                parent.getTopScoreView().addScore(20);
-            } else parent.getTopScoreView().addScore((getNumberCard() * 2) + 5);
+                numScoreAdd = 20;
+            } else  {
+                numScoreAdd= (getNumberCard() * 2) + 5;
+            }
+            parent.getTopScoreView().addScore(numScoreAdd);
 
             parent.getTopScoreView().iterateStep();
 
-
+            CardCell cardPrev = null;
             if (posInStack > 1 && posInStack <= tmpStack.size() && !dontMoveStack) {
-                tmpStack.get(posInStack - 1).setDrawBack(false);
-                tmpStack.get(posInStack - 1).setMove(true);
+                cardPrev = tmpStack.get(posInStack - 1);
+                cardPrev.setDrawBack(false);
+                cardPrev.setMove(true);
             }
+
+            final CardCell finalCardPrev = cardPrev;
+            final int copyStackNum = stackNum;
+            parent.getSteps().push(new Runnable() {
+                @Override
+                public void run() {
+                    if (finalCardPrev != null) {
+                        finalCardPrev.setDrawBack(true);
+                        finalCardPrev.setMove(false);
+                    }
+                    CardCell to = tmpStack.get(tmpStack.size() - 1);
+                    parent.getTopScoreView().decrementStep();
+                    parent.getTopScoreView().addScore(-numScoreAdd);
+
+                    for (int j = posInStack; j < cells.size(); j++) {
+                        float _y;
+                        if (copyStackNum < 7) {
+                            _y = 400 - 40 * (tmpStack.size() - 1);
+                        } else {
+                            _y = to.getStartPos().y;
+                        }
+                        int n = cells.get(j).getStackNum();
+                        cells.get(j).getStartPos().set(tmpStack.get(0).getX(), _y);
+                        cells.get(j).setStackNum(to.getStackNum());
+                        tmpStack.add(cells.get(j));
+                        cells.get(j).posStack(tmpStack.size() - 1);
+                        cells.remove(j);
+                        j--;
+
+                        // если карта в колоде
+                        if (n == CellGame.CARD_DECK_NUM) {
+
+                            break;
+                        }
+                        tmpStack.get(tmpStack.size()-1).moveToStartPosition();
+                    }
+
+
+                }
+            });
+
+
 
             for (int j = posInStack; j < tmpStack.size(); j++) {
                 float _y;
@@ -193,7 +240,28 @@ public class CardCell extends Card {
         setZIndex(9999);
         deckMode = false;
         setDrawBack(false);
-        ((CellGame) getParent()).getTopScoreView().iterateStep();
+        CellGame parent = (CellGame) getParent();
+        parent.getTopScoreView().iterateStep();
+
+        parent.getSteps().push(new Runnable() {
+            @Override
+            public void run() {
+                setMove(false);
+                setLock(true);
+                addAction(Actions.sequence(Actions.moveBy(-230, 0, 0.3f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        setLock(false);
+                    }
+                })));
+                getStartPos().add(-230, 0);
+                setZIndex(9999);
+                deckMode = true;
+                setDrawBack(true);
+                CellGame parent = (CellGame) getParent();
+                parent.getTopScoreView().decrementStep();
+            }
+        });
     }
 
 
