@@ -143,7 +143,7 @@ public class CardCell extends Card {
                             _y = to.getStartPos().y;
                         }
                         int n = cells.get(j).getStackNum();
-                        cells.get(j).getStartPos().set(tmpStack.get(0).getX(), _y);
+                        cells.get(j).getStartPos().set(tmpStack.get(to.getStackNum() == CellGame.CARD_DECK_NUM ? tmpStack.size()-1 :0).getX(), _y);
                         cells.get(j).setStackNum(to.getStackNum());
                         tmpStack.add(cells.get(j));
                         cells.get(j).posStack(tmpStack.size() - 1);

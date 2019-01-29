@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import me.creese.solitaire.menu.buttons.CancelStepBtn;
+import me.creese.solitaire.menu.buttons.SettingsBtn;
 import me.creese.solitaire.util.P;
 
 public class BottomMenu extends Group {
@@ -48,6 +49,11 @@ public class BottomMenu extends Group {
         CancelStepBtn cancelStepBtn = new CancelStepBtn();
         cancelStepBtn.setPosition(50,(getY()-textureFill.getHeight())+textureFill.getHeight()/2-cancelStepBtn.getHeight()/2);
         addActor(cancelStepBtn);
+
+        SettingsBtn settingsBtn = new SettingsBtn();
+
+        settingsBtn.setPosition(50+cancelStepBtn.getWidth()+50,(getY()-textureFill.getHeight())+textureFill.getHeight()/2-settingsBtn.getHeight()/2);
+        addActor(settingsBtn);
     }
 
     public void waitBack() {

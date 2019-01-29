@@ -1,5 +1,6 @@
 package me.creese.solitaire.util;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 
 public class P {
@@ -8,6 +9,7 @@ public class P {
 
     private static P instance;
     public AssetManager asset;
+    public Preferences pref;
 
     public static P get() {
         if(instance == null) instance = new P();
