@@ -3,6 +3,7 @@ package me.creese.solitaire.entity.games.cell;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
@@ -12,6 +13,8 @@ import java.util.Random;
 
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.util.P;
+import me.creese.solitaire.util.S;
 
 
 public class CellGame extends BaseGame {
@@ -21,7 +24,8 @@ public class CellGame extends BaseGame {
     private final Random random;
     private final ArrayList<ArrayList<CardCell>> stackCard;
     // история ходов
-    private final LinkedList<Runnable> steps;
+    //private final LinkedList<Runnable> steps;
+    private final LinkedList<StepBack> steps;
     private ArrayList<DeckItem> deck;
 
 
@@ -206,7 +210,7 @@ public class CellGame extends BaseGame {
 
     }
 
-    public LinkedList<Runnable> getSteps() {
+    public LinkedList<StepBack> getSteps() {
         return steps;
     }
 
@@ -218,8 +222,110 @@ public class CellGame extends BaseGame {
     @Override
     public void cancelStep() {
         if(steps.size() > 0) {
-            Runnable runnable = steps.pop();
-            runnable.run();
+            /*Runnable runnable = steps.pop();
+            runnable.run();*/
+
+            final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
+            final StepBack stepBack = steps.pop();
+
+            System.out.println(stepBack);
+            if(stepBack.forwardDeck) {
+                forwardDeck(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(stepBack.beginIndexOffset != -1) {
+                            int end = stepBack.beginIndexOffset+stepBack.countOffsets;
+                            for (int i = stepBack.beginIndexOffset-1,j=stepBack.countOffsets; i < end; i++,j--) {
+                                final int finalI = i;
+                                deck.get(i).addAction(Actions.sequence(Actions.moveBy(60*j,0,0.2f),Actions.run(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        deck.get(finalI).getStartPos().x = deck.get(finalI).getX();
+                                    }
+                                })));
+
+                                deck.get(i).setSubCard(i >= stepBack.beginIndexOffset);
+                                deck.get(i).setOffsetX(60*j);
+
+                            }
+
+                        }
+
+                    }
+                });
+
+
+                return;
+            }
+
+
+            if(stepBack.beginPosBackToDeck != -1) {
+                int count = stepBack.countBackToDeck;
+
+                int startPos = (stepBack.beginPosBackToDeck-count)+1;
+                for (int i = startPos; i < startPos+count; i++) {
+                    deck.get(i).backMoveToDeck();
+                    deck.get(i).setZIndex(99999);
+                }
+
+                if(stepBack.beginIndexOffset != -1) {
+                    int end = stepBack.beginIndexOffset+stepBack.countOffsets+1;
+                    for (int i = stepBack.beginIndexOffset,j=stepBack.countOffsets; i < end; i++,j--) {
+
+                        deck.get(i).moveBy(60*j,0);
+                        deck.get(i).setSubCard(i > stepBack.beginIndexOffset);
+                        deck.get(i).getStartPos().x = deck.get(i).getX();
+                        deck.get(i).setOffsetX(60*j);
+                       // System.out.println("move back "+i);
+                    }
+
+                }
+
+            } else {
+                ArrayList<CardCell> fromStack = stackCard.get(stepBack.fromStack);
+                ArrayList<CardCell> toStack = stackCard.get(stepBack.toStack);
+                int toPosAdd = stepBack.toPosAdd;
+
+                if (toStack.size() > 1 && stepBack.toStack < 7) {
+                    CardCell c = toStack.get(toStack.size() - 1);
+                    c.setDrawBack(true);
+                    c.setMove(false);
+                }
+                CardCell first = fromStack.get(stepBack.fromPos);
+                for (int i = stepBack.fromPos; i < fromStack.size(); i++) {
+
+                    CardCell tmp = fromStack.get(i);
+
+
+                    tmp.setStackNum(stepBack.toStack);
+                    if (stepBack.toStack == CARD_DECK_NUM) {
+                        tmp.getStartPos().x = 280 + tmp.getOffsetX();
+                        tmp.getStartPos().y = toStack.get(0).getY();
+                    } else {
+                        tmp.getStartPos().x = toStack.get(0).getX();
+                        if (stepBack.toStack >= 7) {
+                            tmp.getStartPos().y = toStack.get(0).getY();
+                        } else
+                        tmp.getStartPos().y = 400 - ((toStack.size() - 1) * 40);
+                    }
+
+                    if(toPosAdd != -1) {
+                        toStack.add(toPosAdd, tmp);
+                        tmp.posStack(toPosAdd);
+                        updateDeckIndex();
+                    }
+                    else {
+                        tmp.posStack(toStack.size());
+                        toStack.add(tmp);
+                    }
+                    fromStack.remove(i);
+                    i--;
+
+                }
+                first.moveToStartPosition();
+
+            }
+
         }
     }
 
@@ -231,13 +337,6 @@ public class CellGame extends BaseGame {
             ArrayList<CardCell> cardCells = stackCard.get(i);
             if (i == CARD_DECK_NUM) {
 
-                /*boolean isAlreadyOpenDeck = false;
-
-                if (checkEmptyDeck()) {
-                    restartDeck();
-                    cardCells.get(Math.max(cardCells.size() - 1, 0)).openCardInDeck();
-                    isAlreadyOpenDeck = true;
-                }*/
                 boolean isEnd = false;
 
                 if (cardCells.size() > 0) {
@@ -371,7 +470,7 @@ public class CellGame extends BaseGame {
 
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 4; j++) {
-                DeckItem deckItem = new DeckItem(me.creese.solitaire.entity.CardType.getForNum(j), i + 1);
+                DeckItem deckItem = new DeckItem(CardType.getForNum(j), i + 1);
                 deck.add(deckItem);
             }
         }
@@ -393,16 +492,94 @@ public class CellGame extends BaseGame {
         }
     }
 
-    public void restartDeck() {
-        final ArrayList<CardCell> cardCells = stackCard.get(CARD_DECK_NUM);
+    public void clearDeckFromSub() {
 
+
+
+        final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
+        int startIndex = -1;
+        int count = 0;
+        for (int i = 0; i < deck.size(); i++) {
+            CardCell cardCell = deck.get(i);
+            if(cardCell.isSubCard()) {
+                if(startIndex < 0) startIndex = i;
+                count++;
+            }
+        }
+
+
+
+
+        startIndex--;
+        if(startIndex >=0) {
+            StepBack tmp = steps.peek();
+            if(tmp.beginPosBackToDeck != -1) {
+                tmp.beginIndexOffset = startIndex;
+                tmp.countOffsets = count;
+            }
+            for (int i = startIndex,j=count; i < startIndex+count+1; i++,j--) {
+
+                deck.get(i).moveBy(-60*j,0);
+                deck.get(i).setSubCard(false);
+                deck.get(i).getStartPos().x = deck.get(i).getX();
+                deck.get(i).setOffsetX(0);
+
+            }
+        }
+
+    }
+    public void forwardDeck() {
+        forwardDeck(null);
+    }
+    public void forwardDeck(final Runnable afterAllMove) {
+        final ArrayList<CardCell> cardCells = stackCard.get(CARD_DECK_NUM);
         for (int i = 0; i < cardCells.size(); i++) {
             final CardCell cell = cardCells.get(i);
+            cell.setLock(true);
+            cell.addAction(Actions.sequence(Actions.moveBy(230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    if(cell.getPosInStack() == cardCells.size()-1) {
+
+                        lockCards(false);
+                        if (afterAllMove != null) {
+                            afterAllMove.run();
+                        }
+
+                    }
+                }
+            })));
+            cell.getStartPos().add(230, 0);
+            cell.setZIndex(0);
+            cell.setDeckMode(false);
+            cell.setDrawBack(false);
+            cell.setMove(true);
+
+        }
+    }
+    public void restartDeck() {
+        final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
+        StepBack s = new StepBack(0,0,0,0);
+        s.forwardDeck = true;
+        steps.push(s);
+        if(P.get().pref.getBoolean(S.DIF_CELL)) {
+            for (int i = deck.size()-1; i >= 0; i--) {
+                if(deck.get(i).isSubCard()) {
+                    s.beginIndexOffset = i;
+                    s.countOffsets++;
+                }
+            }
+            clearDeckFromSub();
+        }
+
+
+        for (int i = 0; i < deck.size(); i++) {
+            final CardCell cell = deck.get(i);
             cell.setLock(true);
             cell.addAction(Actions.sequence(Actions.moveBy(-230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
                 @Override
                 public void run() {
-                    if(cell.getPosInStack() == cardCells.size()-1) {
+                    if(cell.getPosInStack() == deck.size()-1) {
 
                         lockCards(false);
 
@@ -418,7 +595,8 @@ public class CellGame extends BaseGame {
 
         }
 
-        steps.push(new Runnable() {
+
+       /* steps.push(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < cardCells.size(); i++) {
@@ -442,10 +620,20 @@ public class CellGame extends BaseGame {
 
                 }
             }
-        });
+        });*/
     }
 
 
+    private void printDeck(int deckNum) {
+        ArrayList<CardCell> cardCells = stackCard.get(deckNum);
+        StringBuilder sb = new StringBuilder();
+        System.out.println(deckNum);
+        for (CardCell cardCell : cardCells) {
+            sb.append(cardCell.getPosInStack());
+            sb.append(" ");
+        }
+        System.out.println(sb);
+    }
     public ArrayList<ArrayList<CardCell>> getStackCard() {
         return stackCard;
     }
