@@ -15,6 +15,8 @@ public class StepBack {
     public int toPosAdd = -1;
     public boolean forwardDeck;
 
+    public int minusScore = 0;
+
 
     public StepBack(int fromStack, int toStack, int fromPos, int offsetX) {
         this.fromStack = fromStack;

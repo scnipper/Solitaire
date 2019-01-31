@@ -16,7 +16,6 @@ public class CardCell extends Card {
     private int stackNum;
     private int posInStack;
     private boolean deckMode;
-    private boolean dontMoveStack;
     // если карта не видна за лругими чуть приподнять ее
     private boolean isMoveUp;
     private boolean movingCard;
@@ -76,7 +75,6 @@ public class CardCell extends Card {
         setDrawBack(true);
         setSubCard(false);
         CellGame parent = (CellGame) getParent();
-        parent.getTopScoreView().decrementStep();
     }
 
     public void moveToStartPosition() {
@@ -140,99 +138,18 @@ public class CardCell extends Card {
 
             parent.getTopScoreView().iterateStep();
 
-            CardCell cardPrev = null;
-            if (posInStack > 1 && posInStack <= tmpStack.size() && !dontMoveStack) {
-                cardPrev = tmpStack.get(posInStack - 1);
+            if (posInStack > 1 && posInStack <= tmpStack.size() && stackNum != CellGame.CARD_DECK_NUM) {
+                CardCell cardPrev = tmpStack.get(posInStack - 1);
                 cardPrev.setDrawBack(false);
                 cardPrev.setMove(true);
             }
 
             StepBack s = new StepBack(child.getStackNum(), stackNum, cells.size(), offsetX);
+            s.minusScore = numScoreAdd;
             if(stackNum == CellGame.CARD_DECK_NUM) {
                 s.toPosAdd = posInStack;
             }
             parent.getSteps().push(s);
-            /*final CardCell finalCardPrev = cardPrev;
-            final int copyStackNum = stackNum;
-            final int savePosInStack = posInStack;
-
-            parent.getSteps().push(new Runnable() {
-                @Override
-                public void run() {
-                    if (finalCardPrev != null) {
-                        finalCardPrev.setDrawBack(true);
-                        finalCardPrev.setMove(false);
-                    }
-                    CardCell to = tmpStack.get(tmpStack.size() - 1);
-                    parent.getTopScoreView().decrementStep();
-                    parent.getTopScoreView().addScore(-numScoreAdd);
-
-                    for (int j = posInStack; j < cells.size(); j++) {
-                        float _y;
-                        if (copyStackNum < 7) {
-                            _y = 400 - 40 * (tmpStack.size() - 1);
-                        } else {
-                            _y = to.getStartPos().y;
-                        }
-                        int n = cells.get(j).getStackNum();
-                        float _x = tmpStack.get( 0).getX();
-                        if(to.getStackNum() == CellGame.CARD_DECK_NUM) {
-                            _x = 280;
-                        }
-
-
-
-                        int next = 0;
-                        if(P.get().pref.getBoolean(S.DIF_CELL)) {
-                            for (int i = 0; i < tmpStack.size(); i++) {
-                                CardCell cardCell = tmpStack.get(i);
-
-                                if(cardCell.isSubCard()){
-
-                                    next = i - 1;
-
-                                    if(next >=0) {
-                                        _x = tmpStack.get(next).getX()+60;
-                                        tmpStack.get(next).setSubCard(true);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        next--;
-                        cells.get(j).getStartPos().set(_x, _y);
-                        cells.get(j).setStackNum(to.getStackNum());
-
-
-                        if(copyStackNum == CellGame.CARD_DECK_NUM) {
-                            tmpStack.add(savePosInStack, cells.get(j));
-                            cells.get(j).posStack(savePosInStack);
-                        } else {
-                            tmpStack.add( cells.get(j));
-                            cells.get(j).posStack(tmpStack.size()-1);
-                        }
-                        cells.remove(j);
-                        j--;
-
-                        // если карта в колоде
-                        if (n == CellGame.CARD_DECK_NUM) {
-
-                            break;
-                        }
-
-                        if(copyStackNum == CellGame.CARD_DECK_NUM) {
-                            tmpStack.get(savePosInStack).setZIndex(9999);
-                            tmpStack.get(savePosInStack).moveToStartPosition(tmpStack.get(savePosInStack).posInStack);
-                        } else {
-                            tmpStack.get(tmpStack.size()-1).setZIndex(9999);
-                            tmpStack.get(tmpStack.size()-1).moveToStartPosition(tmpStack.get(tmpStack.size()-1).posInStack);
-                        }
-                    }
-
-
-                }
-            });*/
 
 
             for (int j = posInStack; j < tmpStack.size(); j++) {
@@ -262,7 +179,6 @@ public class CardCell extends Card {
                     break;
                 }
             }
-            dontMoveStack = false;
 
             if (isCheckToAuto) parent.checkToAuto();
 
@@ -324,7 +240,7 @@ public class CardCell extends Card {
         final CellGame parent = (CellGame) getParent();
 
         parent.getSteps().peek().countBackToDeck++;
-        parent.getTopScoreView().iterateStep();
+
 
 
         if (P.get().pref.getBoolean(S.DIF_CELL)) {
@@ -338,40 +254,11 @@ public class CardCell extends Card {
                 deck.get(prev).openCardInDeck(indexOpen + 1);
 
             } else {
-               /* final int copyPos = posInStack;
-                final int copyIndex = indexOpen;
-                parent.getSteps().push(new Runnable() {
-                    @Override
-                    public void run() {
-                        int next = copyPos + copyIndex + 1;
-                        for (int i = copyPos, j = copyIndex; i < next; i++,j--) {
-                            if(i < deck.size()) {
-                                deck.get(i).backMoveToDeck(j);
-                                deck.get(i).setSubCard(false);
-                            }
-                        }
-
-
-                        for (int i = next,j=2; i < next+3; i++,j--) {
-                            if(i < deck.size()) {
-                                deck.get(i).moveBy(60 * j, 0);
-
-                                deck.get(i).setSubCard(true);
-                                deck.get(i).getStartPos().x = deck.get(i).getX();
-                            }
-                        }
-                    }
-                });*/
+                parent.getTopScoreView().iterateStep();
             }
 
         } else {
-           /* parent.getSteps().push(new Runnable() {
-                @Override
-                public void run() {
-
-                    backMoveToDeck(0);
-                }
-            });*/
+            parent.getTopScoreView().iterateStep();
         }
 
     }
@@ -393,9 +280,6 @@ public class CardCell extends Card {
         return posInStack;
     }
 
-    public void setDontMoveStack(boolean dontMoveStack) {
-        this.dontMoveStack = dontMoveStack;
-    }
 
     public boolean isDeckMode() {
         return deckMode;

@@ -20,13 +20,12 @@ import me.creese.solitaire.util.S;
 public class CellGame extends BaseGame {
 
     public static final int CARD_DECK_NUM = 11;
-    public static final int DECK_SIZE = 24;
     private final Random random;
     private final ArrayList<ArrayList<CardCell>> stackCard;
     // история ходов
-    //private final LinkedList<Runnable> steps;
     private final LinkedList<StepBack> steps;
     private ArrayList<DeckItem> deck;
+    private boolean lockBackStep;
 
 
     public CellGame() {
@@ -94,7 +93,6 @@ public class CellGame extends BaseGame {
 
             card.setDrawBack(true);
             card.setDeckMode(true);
-            card.setDontMoveStack(true);
             card.posStack(cardCells.size());
             card.setStackNum(11);
             cardCells.add(card);
@@ -175,7 +173,6 @@ public class CellGame extends BaseGame {
 
             card.setDrawBack(true);
             card.setDeckMode(true);
-            card.setDontMoveStack(true);
             card.posStack(cardCells.size());
             card.setStackNum(11);
             cardCells.add(card);
@@ -221,14 +218,13 @@ public class CellGame extends BaseGame {
 
     @Override
     public void cancelStep() {
-        if(steps.size() > 0) {
-            /*Runnable runnable = steps.pop();
-            runnable.run();*/
+        if(steps.size() > 0 && !lockBackStep) {
 
             final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
             final StepBack stepBack = steps.pop();
 
-            System.out.println(stepBack);
+            getTopScoreView().decrementStep();
+            getTopScoreView().addScore(-stepBack.minusScore);
             if(stepBack.forwardDeck) {
                 forwardDeck(new Runnable() {
                     @Override
@@ -241,6 +237,7 @@ public class CellGame extends BaseGame {
                                     @Override
                                     public void run() {
                                         deck.get(finalI).getStartPos().x = deck.get(finalI).getX();
+                                        lockBackStep = false;
                                     }
                                 })));
 
@@ -276,7 +273,6 @@ public class CellGame extends BaseGame {
                         deck.get(i).setSubCard(i > stepBack.beginIndexOffset);
                         deck.get(i).getStartPos().x = deck.get(i).getX();
                         deck.get(i).setOffsetX(60*j);
-                       // System.out.println("move back "+i);
                     }
 
                 }
@@ -300,6 +296,7 @@ public class CellGame extends BaseGame {
                     tmp.setStackNum(stepBack.toStack);
                     if (stepBack.toStack == CARD_DECK_NUM) {
                         tmp.getStartPos().x = 280 + tmp.getOffsetX();
+
                         tmp.getStartPos().y = toStack.get(0).getY();
                     } else {
                         tmp.getStartPos().x = toStack.get(0).getX();
@@ -310,6 +307,9 @@ public class CellGame extends BaseGame {
                     }
 
                     if(toPosAdd != -1) {
+                        if(tmp.getOffsetX() > 0) {
+                            toStack.get(toPosAdd).setSubCard(true);
+                        }
                         toStack.add(toPosAdd, tmp);
                         tmp.posStack(toPosAdd);
                         updateDeckIndex();
@@ -528,11 +528,10 @@ public class CellGame extends BaseGame {
         }
 
     }
-    public void forwardDeck() {
-        forwardDeck(null);
-    }
+
     public void forwardDeck(final Runnable afterAllMove) {
         final ArrayList<CardCell> cardCells = stackCard.get(CARD_DECK_NUM);
+        lockBackStep = true;
         for (int i = 0; i < cardCells.size(); i++) {
             final CardCell cell = cardCells.get(i);
             cell.setLock(true);
@@ -549,12 +548,17 @@ public class CellGame extends BaseGame {
                     }
                 }
             })));
+
             cell.getStartPos().add(230, 0);
             cell.setZIndex(0);
             cell.setDeckMode(false);
             cell.setDrawBack(false);
             cell.setMove(true);
 
+        }
+
+        if(!P.get().pref.getBoolean(S.DIF_CELL)) {
+            lockBackStep = false;
         }
     }
     public void restartDeck() {
@@ -594,33 +598,6 @@ public class CellGame extends BaseGame {
             cell.posStack(i);
 
         }
-
-
-       /* steps.push(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < cardCells.size(); i++) {
-                    final CardCell cell = cardCells.get(i);
-                    cell.setLock(true);
-                    cell.addAction(Actions.sequence(Actions.moveBy(230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(cell.getPosInStack() == cardCells.size()-1) {
-
-                                lockCards(false);
-
-                            }
-                        }
-                    })));
-                    cell.getStartPos().add(230, 0);
-                    cell.setZIndex(0);
-                    cell.setDeckMode(false);
-                    cell.setDrawBack(false);
-                    cell.setMove(true);
-
-                }
-            }
-        });*/
     }
 
 
