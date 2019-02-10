@@ -5,11 +5,13 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -17,7 +19,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import me.creese.solitaire.CardsGames;
+import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.P;
+import me.creese.solitaire.util.Shapes;
+import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.GameView;
 
 
@@ -28,6 +33,7 @@ import me.creese.util.display.GameView;
 public class Loading extends GameView {
 
     public static final String FONT_ROBOTO = "fonts/font_light.fnt";
+    private TexturePrepare prep;
 
 
     public Loading(CardsGames root) {
@@ -52,10 +58,46 @@ public class Loading extends GameView {
 
         P.get().asset.load(FONT_ROBOTO, BitmapFont.class, paramFont);
 
+        loadFrameTextures();
     }
 
+    private void loadFrameTextures() {
+        prep = new TexturePrepare();
+        getRoot().addTransitObject(prep);
+        final Shapes shape = new Shapes();
+        prep.setPaddingX(2);
+        prep.setPaddingY(2);
+        prep.setDebugImage(true);
+        prep.setPreAndPostDraw(new TexturePrepare.PreAndPostDraw() {
+            @Override
+            public void drawPre() {
+                Gdx.gl.glDepthMask(false);
+                Gdx.gl.glEnable(GL20.GL_BLEND);
+                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            }
 
-    class LogoDraw extends Group {
+            @Override
+            public void drawPost() {
+                shape.flush();
+                Gdx.gl.glDepthMask(true);
+            }
+        });
+        shape.setProjMatrix(prep.getCamera().combined);
+
+        prep.addDraw(FTextures.STEP_BACK_BTN, 475, 162, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.setColor(new Color(0x000000ac));
+                shape.rectRound(bX,bY,475,162,81);
+                //shape.setColor(Color.WHITE);
+            }
+        });
+
+        prep.start();
+
+    }
+
+        class LogoDraw extends Group {
 
 
         private final Sprite splash;
@@ -92,7 +134,7 @@ public class Loading extends GameView {
         public void act(float delta) {
             super.act(delta);
             try {
-                if (P.get().asset.update()) {
+                if (P.get().asset.update() && prep.isLoad()) {
 
                     if (getActions().size == 0 && !drawBar) {
                         addAction(Actions.color(new Color(0), 1));
