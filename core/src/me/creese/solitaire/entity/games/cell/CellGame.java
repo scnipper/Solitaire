@@ -26,6 +26,7 @@ public class CellGame extends BaseGame {
     private final LinkedList<StepBack> steps;
     private ArrayList<DeckItem> deck;
     private boolean lockBackStep;
+    private EmptyCardDeck emptyCardDeck;
 
 
     public CellGame() {
@@ -47,7 +48,7 @@ public class CellGame extends BaseGame {
             stackCard.add(new ArrayList<CardCell>());
             if(i < 7) {
 
-                EmptyCard cardFirst = new EmptyCard(50 + (i * 230), 400, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
+                EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1);
                 cardFirst.setStackNum(i);
                 cardFirst.posStack(0);
                 stackCard.get(i).add(cardFirst);
@@ -56,8 +57,9 @@ public class CellGame extends BaseGame {
 
                     int indexDeck = random.nextInt(deck.size());
                     DeckItem deckItem = deck.get(indexDeck);
+                    int spaceBetweenCards = 24;
 
-                    CardCell card = new CardCell(50 + (i * 230), 400 - (j * 40),
+                    CardCell card = new CardCell(33 + (i * 148), 1213 - (j * spaceBetweenCards),
                             deckItem.getType(), deckItem.getNumber());
                     deck.remove(indexDeck);
 
@@ -70,7 +72,7 @@ public class CellGame extends BaseGame {
                     addActor(card);
                 }
             } else {
-                PlaceCard placeCard = new PlaceCard(900 + ((i-7) * 230), 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
+                PlaceCard placeCard = new PlaceCard(33 + ((i-7) * 148), 1439, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
                 placeCard.setStackNum(i);
                 placeCard.posStack(0);
                 stackCard.get(i).add(placeCard);
@@ -81,14 +83,15 @@ public class CellGame extends BaseGame {
         ArrayList<CardCell> cardCells = new ArrayList<>();
         stackCard.add(cardCells);
 
-        addActor(new EmptyCardDeck(50, 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1,11));
+        emptyCardDeck = new EmptyCardDeck(922, 1439, CardType.DIAMONDS, 1, 11);
+        addActor(emptyCardDeck);
 
         for (int i = 0; i < deck.size(); i++) {
 
             int index = random.nextInt(deck.size());
             DeckItem deckItem = deck.get(index);
 
-            CardCell card = new CardCell(50, 750, deckItem.getType(), deckItem.getNumber());
+            CardCell card = new CardCell(922, 1439, deckItem.getType(), deckItem.getNumber());
 
 
             card.setDrawBack(true);
@@ -519,7 +522,7 @@ public class CellGame extends BaseGame {
             }
             for (int i = startIndex,j=count; i < startIndex+count+1; i++,j--) {
 
-                deck.get(i).moveBy(-60*j,0);
+                deck.get(i).moveBy(63*j,0);
                 deck.get(i).setSubCard(false);
                 deck.get(i).getStartPos().x = deck.get(i).getX();
                 deck.get(i).setOffsetX(0);
@@ -535,7 +538,7 @@ public class CellGame extends BaseGame {
         for (int i = 0; i < cardCells.size(); i++) {
             final CardCell cell = cardCells.get(i);
             cell.setLock(true);
-            cell.addAction(Actions.sequence(Actions.moveBy(230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
+            cell.addAction(Actions.sequence(Actions.moveTo(emptyCardDeck.getX(), emptyCardDeck.getY(), 0.1f + (0.013f * i)),Actions.run(new Runnable() {
                 @Override
                 public void run() {
                     if(cell.getPosInStack() == cardCells.size()-1) {
@@ -549,7 +552,7 @@ public class CellGame extends BaseGame {
                 }
             })));
 
-            cell.getStartPos().add(230, 0);
+            cell.getStartPos().set(emptyCardDeck.getX(), emptyCardDeck.getY());
             cell.setZIndex(0);
             cell.setDeckMode(false);
             cell.setDrawBack(false);
@@ -580,7 +583,7 @@ public class CellGame extends BaseGame {
         for (int i = 0; i < deck.size(); i++) {
             final CardCell cell = deck.get(i);
             cell.setLock(true);
-            cell.addAction(Actions.sequence(Actions.moveBy(-230, 0, 0.1f + (0.013f * i)),Actions.run(new Runnable() {
+            cell.addAction(Actions.sequence(Actions.moveTo(emptyCardDeck.getX(), emptyCardDeck.getY(), 0.1f + (0.013f * i)),Actions.run(new Runnable() {
                 @Override
                 public void run() {
                     if(cell.getPosInStack() == deck.size()-1) {
@@ -590,7 +593,7 @@ public class CellGame extends BaseGame {
                     }
                 }
             })));
-            cell.getStartPos().add(-230, 0);
+            cell.getStartPos().set(emptyCardDeck.getX(), emptyCardDeck.getY());
             cell.setZIndex(9999);
             cell.setDeckMode(true);
             cell.setDrawBack(true);
@@ -600,6 +603,9 @@ public class CellGame extends BaseGame {
         }
     }
 
+    public EmptyCardDeck getEmptyCardDeck() {
+        return emptyCardDeck;
+    }
 
     private void printDeck(int deckNum) {
         ArrayList<CardCell> cardCells = stackCard.get(deckNum);

@@ -60,21 +60,21 @@ public class CardCell extends Card {
     }
 
     public void backMoveToDeck() {
+        CellGame parent = (CellGame) getParent();
         setMove(false);
         setLock(true);
-        addAction(Actions.sequence(Actions.moveBy(-(230 + offsetX), 0, 0.3f), Actions.run(new Runnable() {
+        addAction(Actions.sequence(Actions.moveTo(parent.getEmptyCardDeck().getX(), parent.getEmptyCardDeck().getY(),0.3f), Actions.run(new Runnable() {
             @Override
             public void run() {
                 setLock(false);
             }
         })));
-        getStartPos().add(-(230 + offsetX), 0);
+        getStartPos().set(parent.getEmptyCardDeck().getX(), parent.getEmptyCardDeck().getY());
         setZIndex(9999);
         deckMode = true;
         offsetX = 0;
         setDrawBack(true);
         setSubCard(false);
-        CellGame parent = (CellGame) getParent();
     }
 
     public void moveToStartPosition() {
@@ -155,10 +155,15 @@ public class CardCell extends Card {
             for (int j = posInStack; j < tmpStack.size(); j++) {
                 float _y;
                 if (num < 7) {
-                    _y = 400 - 40 * (cells.size() - 1);
+                    if(cells.size() == 1) {
+                        _y = cells.get(0).getY();
+                    } else {
+                        _y = cells.get(cells.size() - 1).getStartPos().y - 67;
+                    }
                 } else {
                     _y = child.getStartPos().y;
                 }
+
                 int n = tmpStack.get(j).getStackNum();
                 tmpStack.get(j).getStartPos().set(cells.get(0).getX(), _y);
                 tmpStack.get(j).setStackNum(child.getStackNum());
@@ -202,6 +207,7 @@ public class CardCell extends Card {
             boolean isMoveToStart = false;
             int tmpStackCardNum = stackNum;
             for (int i = stackCard.size() - 2; i >= 0; i--) {
+
                 ArrayList<CardCell> cells = stackCard.get(i);
                 CardCell child = cells.get(cells.size() - 1);
                 if (tryMoveToPosition(i, child)) {
@@ -226,14 +232,18 @@ public class CardCell extends Card {
     public void openCardInDeck(final int indexOpen) {
         setMove(true);
         setLock(true);
-        offsetX = 60 * indexOpen;
-        addAction(Actions.sequence(Actions.moveBy(230 + offsetX, 0, 0.3f), Actions.run(new Runnable() {
+        offsetX = 63 * indexOpen;
+        int moveOffset = -148;
+        if(P.get().pref.getBoolean(S.DIF_CELL)) {
+            moveOffset = -296;
+        }
+        addAction(Actions.sequence(Actions.moveBy(moveOffset + offsetX, 0, 0.3f), Actions.run(new Runnable() {
             @Override
             public void run() {
                 setLock(false);
             }
         })));
-        getStartPos().add(230 + (60 * indexOpen), 0);
+        getStartPos().add(moveOffset + (63 * indexOpen), 0);
         setZIndex(9999);
         deckMode = false;
         setDrawBack(false);

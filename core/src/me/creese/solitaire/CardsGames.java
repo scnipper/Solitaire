@@ -2,6 +2,7 @@ package me.creese.solitaire;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 
 import me.creese.solitaire.entity.games.cell.CellGame;
 import me.creese.solitaire.screens.GameScreen;
@@ -14,6 +15,7 @@ public class CardsGames extends Display {
 
     @Override
     public void create() {
+        setBackgroundColor(P.BACKGROUND_COLOR);
         addListGameViews(new Loading(this));
         showGameView(Loading.class);
         P.get().pref = Gdx.app.getPreferences("cell_settings");

@@ -37,18 +37,6 @@ public class GameScreen extends GameView {
         stageFit = new Stage(new FitViewport(P.WIDTH, P.HEIGHT));
 
 
-        final Texture back = new Texture("back.png");
-        back.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-
-        final TextureRegion region = new TextureRegion(back);
-        region.setRegion(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        stage.addActor(new Actor() {
-            @Override
-            public void draw(Batch batch, float parentAlpha) {
-
-                batch.draw(region, 0, 0);
-            }
-        });
 
 
     }
