@@ -33,6 +33,7 @@ import me.creese.util.display.GameView;
 public class Loading extends GameView {
 
     public static final String FONT_ROBOTO = "fonts/font_light.fnt";
+    public static final String FONT_ROBOTO_BOLD = "fonts/font_bold.fnt";
     private TexturePrepare prep;
 
 
@@ -57,6 +58,7 @@ public class Loading extends GameView {
         paramFont.minFilter = Texture.TextureFilter.Linear;
 
         P.get().asset.load(FONT_ROBOTO, BitmapFont.class, paramFont);
+        P.get().asset.load(FONT_ROBOTO_BOLD, BitmapFont.class, paramFont);
 
         loadFrameTextures();
     }
@@ -67,7 +69,7 @@ public class Loading extends GameView {
         final Shapes shape = new Shapes();
         prep.setPaddingX(2);
         prep.setPaddingY(2);
-        prep.setDebugImage(true);
+        //prep.setDebugImage(true);
         prep.setPreAndPostDraw(new TexturePrepare.PreAndPostDraw() {
             @Override
             public void drawPre() {
@@ -87,9 +89,15 @@ public class Loading extends GameView {
         prep.addDraw(FTextures.STEP_BACK_BTN, 475, 162, new TexturePrepare.Draw() {
             @Override
             public void draw(float bX, float bY) {
-                shape.setColor(new Color(0x000000ac));
+                shape.setColor(P.BLACK_TRANSPARENT_COLOR);
                 shape.rectRound(bX,bY,475,162,81);
-                //shape.setColor(Color.WHITE);
+                shape.setColor(Color.WHITE);
+            }
+        });
+        prep.addDraw(FTextures.TOP_MENU_RECT, 450, 147, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.rectRound(bX,bY,450,147,52);
             }
         });
 

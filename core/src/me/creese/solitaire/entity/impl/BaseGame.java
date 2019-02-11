@@ -14,7 +14,7 @@ public abstract class BaseGame extends Group {
     public BaseGame() {
 
         topScoreView = new TopScoreView();
-        addActor(topScoreView);
+
         addActor(new BottomMenu());
     }
 
@@ -28,6 +28,7 @@ public abstract class BaseGame extends Group {
 
     public void setRoot(Display root) {
         this.root = root;
+        addActor(topScoreView);
     }
 
     public TopScoreView getTopScoreView() {

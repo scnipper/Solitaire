@@ -89,7 +89,7 @@ public class Shapes {
         float smoothTmp = smooth;
         smooth = 0;
         //center
-        rect((x + radius) - smoothTmp * 2, (y + radius) - smoothTmp * 2, (width - radius * 2) + smoothTmp * 2, (height - radius * 2) + smoothTmp * 2);
+        rect(x + radius , y + radius  , width - radius * 2 , height - radius * 2 );
         smooth = smoothTmp;
         //bottom
         rect(x + radius, y, width - radius * 2, radius, SmoothSide.BOTTOM);
@@ -457,7 +457,7 @@ public class Shapes {
 
     public void arc(float x, float y, float radius, float start, float degrees) {
 
-        int segments = Math.max(1, (int) (6 * (float) Math.cbrt(radius))) * 8;
+        int segments = Math.max(1, (int) (6 * (float) Math.cbrt(radius))) * 3;
 
         float theta = (2 * MathUtils.PI * (degrees / 360.0f)) / segments;
         float cos = MathUtils.cos(theta);
@@ -468,7 +468,7 @@ public class Shapes {
 
         float cx2 = radius * MathUtils.cos(start * MathUtils.degreesToRadians);
         float cy2 = radius * MathUtils.sin(start * MathUtils.degreesToRadians);
-        segments+=2;
+        //segments++;
         check(segments*2+3);
         short startVert = vertexAdd(x, y, color);
         vertexAdd(x + cx, y + cy, color);
@@ -497,6 +497,16 @@ public class Shapes {
             short vertex3 = (short) (numVert - 2);
             short vertex4 = (short) (numVert - 1);
             indicesAdd(startVert, vertex1, vertex3, vertex1, vertex2, vertex4, vertex1, vertex3, vertex4);
+          /*  if(i == segments -1) {
+                vertexAdd(x + cx, y + cy, color);
+                vertexAdd(x + cx2, y + cy2, clearColor);
+
+                vertex1 = (short) (numVert - 4);
+                vertex2 = (short) (numVert - 3);
+                vertex3 = (short) (numVert - 2);
+                vertex4 = (short) (numVert - 1);
+                indicesAdd(startVert, vertex1, vertex3, vertex1, vertex2, vertex4, vertex1, vertex3, vertex4);
+            }*/
         }
     }
 

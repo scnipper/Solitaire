@@ -1,13 +1,7 @@
 package me.creese.solitaire.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -26,7 +20,7 @@ public class GameScreen extends GameView {
     private BaseGame baseGame;
 
     public GameScreen(Display root) {
-        super(new FitViewport(P.WIDTH, P.HEIGHT), root);
+        super(new FitViewport(P.WIDTH, P.HEIGHT), root, new PolygonSpriteBatch());
 
         Stage stage = new Stage(new ScreenViewport());
         addStage(stage, 0);
@@ -35,8 +29,6 @@ public class GameScreen extends GameView {
         fillBlack = new FillBlack();
         stageScreen.addActor(fillBlack);
         stageFit = new Stage(new FitViewport(P.WIDTH, P.HEIGHT));
-
-
 
 
     }
@@ -69,6 +61,7 @@ public class GameScreen extends GameView {
         super.addRoot(display);
 
         if (display != null) {
+            baseGame.setRoot(display);
             addActor(baseGame);
             baseGame.start();
         }
@@ -79,7 +72,7 @@ public class GameScreen extends GameView {
     }
 
     public void setBaseGame(BaseGame baseGame) {
-        baseGame.setRoot(getRoot());
+
         this.baseGame = baseGame;
     }
 }

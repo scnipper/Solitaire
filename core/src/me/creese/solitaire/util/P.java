@@ -9,6 +9,8 @@ public class P {
     public static final int HEIGHT = 1920;
     // colors
     public static final Color BACKGROUND_COLOR = new Color(0x349422ff);
+    public static final Color BLACK_TRANSPARENT_COLOR = new Color(0x00000017);
+    public static final Color TOP_MENU_COLOR = new Color(0x2E4631ff);
 
     private static P instance;
     public AssetManager asset;
