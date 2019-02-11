@@ -27,6 +27,7 @@ public class TopScoreView extends Actor {
     private final BitmapFont font;
     private final PolygonRegion polygonRegion;
     private final BitmapFont fontBold;
+    private final Display root;
     private boolean timeStart;
     private float time;
     private int step;
@@ -35,7 +36,8 @@ public class TopScoreView extends Actor {
     private float targetWidthFont;
     private Color fontColor;
 
-    public TopScoreView() {
+    public TopScoreView(Display root) {
+        this.root = root;
         setBounds(0, P.HEIGHT-226,P.WIDTH,226);
 
        Pixmap pix = new Pixmap(1,1,Pixmap.Format.RGBA8888);
@@ -116,7 +118,7 @@ public class TopScoreView extends Actor {
     protected void setParent(Group parent) {
         super.setParent(parent);
         if (parent != null) {
-            Display root = ((BaseGame) parent).getRoot();
+
             TexturePrepare texturePrepare = root.getTransitObject(TexturePrepare.class);
 
             topRect = texturePrepare.getByName(FTextures.TOP_MENU_RECT);

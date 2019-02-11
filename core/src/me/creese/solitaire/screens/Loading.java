@@ -89,15 +89,32 @@ public class Loading extends GameView {
         prep.addDraw(FTextures.STEP_BACK_BTN, 475, 162, new TexturePrepare.Draw() {
             @Override
             public void draw(float bX, float bY) {
-                shape.setColor(P.BLACK_TRANSPARENT_COLOR);
+
                 shape.rectRound(bX,bY,475,162,81);
-                shape.setColor(Color.WHITE);
+
             }
         });
         prep.addDraw(FTextures.TOP_MENU_RECT, 450, 147, new TexturePrepare.Draw() {
             @Override
             public void draw(float bX, float bY) {
                 shape.rectRound(bX,bY,450,147,52);
+            }
+        });
+
+        prep.addDraw(FTextures.CIRCLE_162, 162, 162, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.circle(bX,bY, 81);
+            }
+        });
+        prep.addDraw(FTextures.ICON_MENU, 54, 36, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.setColor(P.TOP_MENU_COLOR);
+                shape.rect(bX,bY,54,6);
+                shape.rect(bX,bY+15,54,6);
+                shape.rect(bX,bY+30,54,6);
+                shape.setColor(Color.WHITE);
             }
         });
 
@@ -116,20 +133,20 @@ public class Loading extends GameView {
 
         LogoDraw(CardsGames root) {
             this.root = root;
-            Texture texture = new Texture(Gdx.files.internal("splash/splash.png"), Pixmap.Format.RGBA8888, true);
+            Texture texture = new Texture("splash/splash.png");
             texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             splash = new Sprite(texture);
 
             SequenceAction sequence = new SequenceAction();
             sequence.addAction(Actions.delay(0.3f));
-
-            sequence.addAction(Actions.color(Color.WHITE, 0.5f));
+            sequence.addAction(Actions.color(P.TOP_MENU_COLOR, 0.5f));
 
             addAction(sequence);
 
-            setColor(new Color(0));
+            setColor(Color.CLEAR);
             //splash.setColor(getColor());
             splash.setPosition(P.WIDTH / 2 - (splash.getWidth() / 2), P.HEIGHT / 2 - (splash.getHeight() / 2));
+            ///splash.setColor(P.TOP_MENU_COLOR);
         }
 
         @Override
@@ -145,7 +162,7 @@ public class Loading extends GameView {
                 if (P.get().asset.update() && prep.isLoad()) {
 
                     if (getActions().size == 0 && !drawBar) {
-                        addAction(Actions.color(new Color(0), 1));
+                        addAction(Actions.color(Color.CLEAR, 1));
                         drawBar = true;
 
                     }

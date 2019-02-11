@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import me.creese.solitaire.entity.FillBlack;
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.util.P;
 import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
@@ -17,6 +18,7 @@ public class GameScreen extends GameView {
     private final Stage stageScreen;
     private final Stage stageFit;
     private final FillBlack fillBlack;
+    private final Menu menu;
     private BaseGame baseGame;
 
     public GameScreen(Display root) {
@@ -30,14 +32,14 @@ public class GameScreen extends GameView {
         stageScreen.addActor(fillBlack);
         stageFit = new Stage(new FitViewport(P.WIDTH, P.HEIGHT));
 
+        menu = new Menu(root);
+        root.addTransitObject(menu);
+
 
     }
 
-
-    public void showBlack() {
-        addStage(stageScreen);
-
-
+    public Menu getMenu() {
+        return menu;
     }
 
     public void removeBlack() {
@@ -62,7 +64,8 @@ public class GameScreen extends GameView {
 
         if (display != null) {
             baseGame.setRoot(display);
-            addActor(baseGame);
+            addActor(menu);
+            //addActor(baseGame);
             baseGame.start();
         }
     }

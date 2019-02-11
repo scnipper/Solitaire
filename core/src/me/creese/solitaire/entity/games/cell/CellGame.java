@@ -13,6 +13,8 @@ import java.util.Random;
 
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.menu.Menu;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.S;
 
@@ -27,6 +29,7 @@ public class CellGame extends BaseGame {
     private ArrayList<DeckItem> deck;
     private boolean lockBackStep;
     private EmptyCardDeck emptyCardDeck;
+    private Menu menu;
 
 
     public CellGame() {
@@ -43,7 +46,8 @@ public class CellGame extends BaseGame {
     @Override
     public void start() {
         steps.clear();
-        getTopScoreView().startTime();
+        menu = getRoot().getGameViewForName(GameScreen.class).getMenu();
+        menu.getTopScoreView().startTime();
         for (int i = 0; i < 11; i++) {
             stackCard.add(new ArrayList<CardCell>());
             if(i < 7) {
@@ -226,8 +230,8 @@ public class CellGame extends BaseGame {
             final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
             final StepBack stepBack = steps.pop();
 
-            getTopScoreView().decrementStep();
-            getTopScoreView().addScore(-stepBack.minusScore);
+            menu.getTopScoreView().decrementStep();
+            menu.getTopScoreView().addScore(-stepBack.minusScore);
             if(stepBack.forwardDeck) {
                 forwardDeck(new Runnable() {
                     @Override
@@ -605,6 +609,11 @@ public class CellGame extends BaseGame {
 
     public EmptyCardDeck getEmptyCardDeck() {
         return emptyCardDeck;
+    }
+
+
+    public Menu getMenu() {
+        return menu;
     }
 
     private void printDeck(int deckNum) {

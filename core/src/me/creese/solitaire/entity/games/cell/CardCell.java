@@ -134,9 +134,9 @@ public class CardCell extends Card {
             } else {
                 numScoreAdd = (getNumberCard() * 2) + 5;
             }
-            parent.getTopScoreView().addScore(numScoreAdd);
+            parent.getMenu().getTopScoreView().addScore(numScoreAdd);
 
-            parent.getTopScoreView().iterateStep();
+            parent.getMenu().getTopScoreView().iterateStep();
 
             if (posInStack > 1 && posInStack <= tmpStack.size() && stackNum != CellGame.CARD_DECK_NUM) {
                 CardCell cardPrev = tmpStack.get(posInStack - 1);
@@ -264,11 +264,11 @@ public class CardCell extends Card {
                 deck.get(prev).openCardInDeck(indexOpen + 1);
 
             } else {
-                parent.getTopScoreView().iterateStep();
+                parent.getMenu().getTopScoreView().iterateStep();
             }
 
         } else {
-            parent.getTopScoreView().iterateStep();
+            parent.getMenu().getTopScoreView().iterateStep();
         }
 
     }
