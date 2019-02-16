@@ -65,7 +65,7 @@ public class GameScreen extends GameView {
         if (display != null) {
             baseGame.setRoot(display);
             addActor(menu);
-            //addActor(baseGame);
+            addActor(baseGame);
             baseGame.start();
         }
     }

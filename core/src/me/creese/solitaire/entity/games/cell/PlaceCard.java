@@ -10,5 +10,6 @@ public class PlaceCard extends CardCell {
         super(x, y, cardType, numberCard);
         texture = new Texture("cards/c_place.png");
         setNumberCard(0);
+        setDrawShadow(false);
     }
 }

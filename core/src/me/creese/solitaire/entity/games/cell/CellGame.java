@@ -181,7 +181,7 @@ public class CellGame extends BaseGame {
             card.setDrawBack(true);
             card.setDeckMode(true);
             card.posStack(cardCells.size());
-            card.setStackNum(11);
+            card.setStackNum(CARD_DECK_NUM);
             cardCells.add(card);
             addActor(card);
 

@@ -69,7 +69,7 @@ public class Loading extends GameView {
         final Shapes shape = new Shapes();
         prep.setPaddingX(2);
         prep.setPaddingY(2);
-        //prep.setDebugImage(true);
+       // prep.setDebugImage(true);
         prep.setPreAndPostDraw(new TexturePrepare.PreAndPostDraw() {
             @Override
             public void drawPre() {
@@ -115,6 +115,17 @@ public class Loading extends GameView {
                 shape.rect(bX,bY+15,54,6);
                 shape.rect(bX,bY+30,54,6);
                 shape.setColor(Color.WHITE);
+            }
+        });
+        prep.addDraw(FTextures.SHADOW_CARD, 145, 201, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.setSmooth(18);
+
+                shape.rectRound(bX,bY,145,201,20);
+
+
+                shape.setSmooth(1.5f);
             }
         });
 

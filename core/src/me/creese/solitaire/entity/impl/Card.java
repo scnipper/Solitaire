@@ -1,18 +1,22 @@
 package me.creese.solitaire.entity.impl;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import me.creese.solitaire.entity.CardType;
+import me.creese.solitaire.util.FTextures;
+import me.creese.solitaire.util.TexturePrepare;
 
 public class Card extends Actor {
     public static final int RED_CARD = 0;
     public static final int BLACK_CARD = 1;
-    public static final int DOUBLE_CLICK_TIME = 500; // ms
     private final CardType cardType;
     private final Vector2 startTouch;
     private final Vector2 startPos;
@@ -22,14 +26,15 @@ public class Card extends Actor {
     private boolean isMove;
     private boolean drawBack;
     private boolean lock;
-    private long startTimeDown;
+    private boolean isDrawShadow;
+    private Sprite shadow;
 
     public Card(float x, float y, CardType cardType, int numberCard) {
         this.numberCard = numberCard;
         this.cardType = cardType;
         startTouch = new Vector2();
         startPos = new Vector2(x, y);
-
+        isDrawShadow = true;
         texture = new Texture("cards/c_" + numberCard + "_" + cardType.name().substring(0, 1) + ".png");
         textureBack = new Texture("cards/c_back.png");
         setBounds(x, y, texture.getWidth(), texture.getHeight());
@@ -43,16 +48,6 @@ public class Card extends Actor {
                     return;
                 }
                 if (count >= 2) doubleClick();
-                /*if (startTimeDown > 0) {
-                    long time = System.currentTimeMillis() - startTimeDown;
-                    System.out.println(time);
-                    if (time <= DOUBLE_CLICK_TIME) {
-                        doubleClick();
-                        startTimeDown = 0;
-                    } else {
-                        startTimeDown = 0;
-                    }
-                } else startTimeDown = System.currentTimeMillis();*/
             }
 
 
@@ -80,6 +75,22 @@ public class Card extends Actor {
 
 
     }
+
+    /*public void drawShadow(Shapes shapes) {
+        if(isDrawShadow) {
+            float color = Color.BLACK.toFloatBits();
+            float clear = Color.YELLOW.toFloatBits();
+            int sizeShadow = 6;
+            short center = shapes.vertexAdd(getX() + getWidth() / 2, getY() + getHeight() / 2, color);
+
+            short vertex1 = shapes.vertexAdd(getX() - sizeShadow, getY() - sizeShadow, clear);
+            short vertex2 = shapes.vertexAdd(getX() - sizeShadow, getY() + getHeight() + sizeShadow, clear);
+            short vertex3 = shapes.vertexAdd(getX() + getWidth() + sizeShadow, getY() + getHeight() + sizeShadow, clear);
+            short vertex4 = shapes.vertexAdd(getX() + getWidth() + sizeShadow, getY() - sizeShadow, clear);
+
+            shapes.indicesAdd(center, vertex1, vertex2, center, vertex2, vertex3, center, vertex3, vertex4, center, vertex4, vertex1);
+        }
+    }*/
 
     public void doubleClick() {
     }
@@ -154,9 +165,29 @@ public class Card extends Actor {
         this.lock = lock;
     }
 
+    public void setDrawShadow(boolean drawShadow) {
+        isDrawShadow = drawShadow;
+    }
+
+    @Override
+    protected void setParent(Group parent) {
+        super.setParent(parent);
+        if (parent != null) {
+            TexturePrepare prepare = ((BaseGame) parent).getRoot().getTransitObject(TexturePrepare.class);
+
+            shadow = prepare.getByName(FTextures.SHADOW_CARD);
+            shadow.setColor(Color.BLACK);
+        }
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if(isDrawShadow) {
+            shadow.setPosition(getX()-10,getY()-10);
+            shadow.draw(batch);
+        }
         if (drawBack) {
+
             batch.draw(textureBack, getX(), getY());
         } else batch.draw(texture, getX(), getY());
 

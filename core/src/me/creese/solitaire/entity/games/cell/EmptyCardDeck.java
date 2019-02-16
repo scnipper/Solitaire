@@ -9,5 +9,6 @@ public class EmptyCardDeck extends CardCell {
         super(x, y, cardType, numberCard);
         setStackNum(numStack);
         texture = new Texture("cards/c_place.png");
+        setDrawShadow(false);
     }
 }

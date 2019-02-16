@@ -3,6 +3,7 @@ package me.creese.solitaire;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 
 import me.creese.solitaire.entity.games.cell.CellGame;
 import me.creese.solitaire.menu.Menu;
@@ -35,6 +36,12 @@ public class CardsGames extends Display {
     public void dispose() {
         getTransitObject(TexturePrepare.class).dispose();
 
+    }
+
+    @Override
+    public void render() {
+
+        super.render();
     }
 
     @Override

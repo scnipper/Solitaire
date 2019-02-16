@@ -9,7 +9,7 @@ public class EmptyCard extends CardCell {
         super(x, y, cardType, numberCard);
         texture = new Texture("cards/c_place.png");
         setNumberCard(14);
-
+        setDrawShadow(false);
 
     }
 

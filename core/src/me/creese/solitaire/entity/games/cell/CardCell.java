@@ -1,5 +1,6 @@
 package me.creese.solitaire.entity.games.cell;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
@@ -131,6 +132,19 @@ public class CardCell extends Card {
                 if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM)
                     return false;
                 numScoreAdd = 20;
+                if (num != CellGame.CARD_DECK_NUM) {
+                    ArrayList<CardCell> c = stackCard.get(num);
+
+                    int n = c.size() - 2;
+
+                    if(n >=1) {
+                        c.get(n).setDrawShadow(false);
+                    }
+                }
+
+
+
+
             } else {
                 numScoreAdd = (getNumberCard() * 2) + 5;
             }
@@ -148,6 +162,22 @@ public class CardCell extends Card {
             s.minusScore = numScoreAdd;
             if(stackNum == CellGame.CARD_DECK_NUM) {
                 s.toPosAdd = posInStack;
+                // рисуем тень на предыдущей картой
+                int n = posInStack + 2;
+                if(n < tmpStack.size()) {
+                    tmpStack.get(n).setDrawShadow(true);
+                }
+
+            }
+
+            if(stackNum >= 7 && stackNum < CellGame.CARD_DECK_NUM) {
+
+
+                int n = tmpStack.size() - 2;
+
+                if(n >=1) {
+                    tmpStack.get(n).setDrawShadow(true);
+                }
             }
             parent.getSteps().push(s);
 
@@ -230,8 +260,18 @@ public class CardCell extends Card {
      * Получение карты из колоды
      */
     public void openCardInDeck(final int indexOpen) {
+        final CellGame parent = (CellGame) getParent();
+        final ArrayList<CardCell> deck = parent.getStackCard().get(stackNum);
+
         setMove(true);
         setLock(true);
+
+
+        final int n = posInStack + 2;
+
+
+
+        setDrawShadow(true);
         offsetX = 63 * indexOpen;
         int moveOffset = -148;
         if(P.get().pref.getBoolean(S.DIF_CELL)) {
@@ -241,20 +281,22 @@ public class CardCell extends Card {
             @Override
             public void run() {
                 setLock(false);
+                if(n < deck.size()) {
+                    final CardCell nextCard = deck.get(n);
+                    nextCard.setDrawShadow(false);
+                }
             }
         })));
         getStartPos().add(moveOffset + (63 * indexOpen), 0);
         setZIndex(9999);
         deckMode = false;
         setDrawBack(false);
-        final CellGame parent = (CellGame) getParent();
 
         parent.getSteps().peek().countBackToDeck++;
 
 
 
         if (P.get().pref.getBoolean(S.DIF_CELL)) {
-            final ArrayList<CardCell> deck = parent.getStackCard().get(stackNum);
             int prev = posInStack - 1;
             if (indexOpen < 2 && prev >= 0) {
 
@@ -313,6 +355,19 @@ public class CardCell extends Card {
 
     public void setOffsetX(int offsetX) {
         this.offsetX = offsetX;
+    }
+
+    @Override
+    protected void setParent(Group parent) {
+        super.setParent(parent);
+        if (parent != null) {
+            if(stackNum == CellGame.CARD_DECK_NUM ) {
+
+                if(posInStack >0)
+                setDrawShadow(false);
+                else System.out.println(posInStack+" draw shadow");
+            }
+        }
     }
 
     @Override
