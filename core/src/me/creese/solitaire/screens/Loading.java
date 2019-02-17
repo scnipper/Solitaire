@@ -69,7 +69,7 @@ public class Loading extends GameView {
         final Shapes shape = new Shapes();
         prep.setPaddingX(2);
         prep.setPaddingY(2);
-       // prep.setDebugImage(true);
+        //prep.setDebugImage(true);
         prep.setPreAndPostDraw(new TexturePrepare.PreAndPostDraw() {
             @Override
             public void drawPre() {
@@ -128,6 +128,20 @@ public class Loading extends GameView {
                 shape.setSmooth(1.5f);
             }
         });
+
+        prep.addDraw(FTextures.DEF_BUTTON_SETTINGS, 928, 142, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.rectRound(bX,bY,928,142,42);
+            }
+        });
+        prep.addDraw(FTextures.DEF_BUTTON_BIG, 928, 174, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.rectRound(bX,bY,928,174,42);
+            }
+        });
+
 
         prep.start();
 

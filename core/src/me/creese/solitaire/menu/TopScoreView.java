@@ -13,12 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Align;
 
-import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.S;
-import me.creese.solitaire.util.Shapes;
 import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
 
@@ -28,7 +26,7 @@ public class TopScoreView extends Actor {
     private final PolygonRegion polygonRegion;
     private final BitmapFont fontBold;
     private final Display root;
-    private boolean timeStart;
+    private boolean isTimeStart;
     private float time;
     private int step;
     private int score;
@@ -102,13 +100,17 @@ public class TopScoreView extends Actor {
 
     public void startTime() {
         time = 0;
-        timeStart = true;
+        isTimeStart = true;
+    }
+
+    public void setTimeStart(boolean timeStart) {
+        isTimeStart = timeStart;
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        if(timeStart) {
+        if(isTimeStart) {
             time += delta;
         }
 

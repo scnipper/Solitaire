@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.menu.settings.DifficultSettings;
+import me.creese.solitaire.menu.settings.SettingsMenu;
+import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
@@ -21,7 +23,7 @@ public class SettingsBtn extends Actor {
     private Sprite sprite;
     private Sprite icon;
 
-    public SettingsBtn(Display root) {
+    public SettingsBtn(final Display root) {
         this.root = root;
         dificult = new DifficultSettings();
         setBounds(808, 68, 162, 162);
@@ -29,7 +31,7 @@ public class SettingsBtn extends Actor {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                getParent().getParent().setVisible(false);
+                root.showGameView(SettingsScreen.class);
                 /*Display root = ((BaseGame) getParent().getParent()).getRoot();
 
                 GameScreen gameScreen = root.getGameViewForName(GameScreen.class);

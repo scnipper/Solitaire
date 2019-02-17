@@ -9,6 +9,7 @@ import me.creese.solitaire.entity.games.cell.CellGame;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.screens.Loading;
+import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
@@ -28,6 +29,7 @@ public class CardsGames extends Display {
 
     public void loadOk() {
         addListGameViews(new GameScreen(this));
+        addListGameViews(new SettingsScreen(this));
         getGameViewForName(GameScreen.class).setBaseGame(new CellGame());
         showGameView(GameScreen.class);
     }

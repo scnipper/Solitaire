@@ -18,6 +18,10 @@ public class Menu extends Group {
         return topScoreView;
     }
 
+    public BottomMenu getBottomMenu() {
+        return bottomMenu;
+    }
+
     @Override
     protected void setParent(Group parent) {
         super.setParent(parent);
