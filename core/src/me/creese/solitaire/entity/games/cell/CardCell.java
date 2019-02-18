@@ -90,12 +90,7 @@ public class CardCell extends Card {
         if (startIndex == -1) startIndex = posInStack;
         setLock(true);
         setZIndex(99999);
-        addAction(Actions.sequence(Actions.moveTo(getStartPos().x, getStartPos().y, 0.2f + (0.05f * (posInStack - startIndex))), Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                setLock(false);
-            }
-        })));
+
         ArrayList<ArrayList<CardCell>> stackCard = ((CellGame) getParent()).getStackCard();
         ArrayList<CardCell> sta = stackCard.get(stackNum);
         int next = posInStack + 1;
@@ -104,6 +99,12 @@ public class CardCell extends Card {
 
             sta.get(next).moveToStartPosition(startIndex);
         }
+        addAction(Actions.sequence(Actions.moveTo(getStartPos().x, getStartPos().y, 0.2f + (0.05f * (posInStack - startIndex))), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                setLock(false);
+            }
+        })));
     }
 
 

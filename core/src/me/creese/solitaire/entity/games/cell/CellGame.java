@@ -342,6 +342,9 @@ public class CellGame extends BaseGame {
         }
     }
 
+    /**
+     * Один шаг автоматической сборки
+     */
     private void stepBuildCards() {
 
 
@@ -425,6 +428,21 @@ public class CellGame extends BaseGame {
     }
 
     /**
+     * Метод возвращает true если все actions с карт удалены
+     * @return
+     */
+    private boolean isCardActionsClear() {
+
+        for (ArrayList<CardCell> cardCells : stackCard) {
+            for (CardCell cardCell : cardCells) {
+                if(cardCell.getActions().size > 0) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Автоматическая сборка карт
      */
     public void checkToAuto() {
@@ -443,14 +461,20 @@ public class CellGame extends BaseGame {
         addAction(Actions.repeat(-1, Actions.sequence(Actions.delay(0.5f), Actions.run(new Runnable() {
             @Override
             public void run() {
-                if(!checkToGameOver())
-                stepBuildCards();
+                if(!checkToGameOver()) {
+                    if(isCardActionsClear())
+                    stepBuildCards();
+                }
                 else getActions().clear();
             }
         }))));
 
     }
 
+    /**
+     * Проверка на отсутствие карт во всех колодах
+     * @return
+     */
     public boolean checkToGameOver() {
         for (int i = 0; i < 8; i++) {
             if (i == 7) {
@@ -497,6 +521,10 @@ public class CellGame extends BaseGame {
         }
     }
 
+    /**
+     * Блокировка всех карт
+     * @param isLock
+     */
     public void lockCards(boolean isLock) {
         for (ArrayList<CardCell> cardCells : stackCard) {
             for (CardCell cardCell : cardCells) {
@@ -574,6 +602,10 @@ public class CellGame extends BaseGame {
             lockBackStep = false;
         }
     }
+
+    /**
+     * Возвращение колоды в начальное состояние
+     */
     public void restartDeck() {
         final ArrayList<CardCell> deck = stackCard.get(CARD_DECK_NUM);
         StepBack s = new StepBack(0,0,0,0);
