@@ -27,7 +27,7 @@ public class CoinCounter extends Actor {
 
         back = prepare.getByName(FTextures.DEF_BUTTON_SETTINGS);
         back.setColor(P.BLACK_TRANSPARENT_COLOR);
-        setBounds(P.WIDTH/2-back.getWidth()/2,1289,back.getWidth(),back.getHeight());
+        setBounds(P.WIDTH/2-back.getWidth()/2,1222,back.getWidth(),back.getHeight());
         coin = new Texture("coin.png");
         plusIcon = new Texture("plus_icon.png");
     }

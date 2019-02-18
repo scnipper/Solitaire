@@ -6,9 +6,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import me.creese.solitaire.menu.CoinCounter;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.buttons.ContinueGameBtn;
+import me.creese.solitaire.menu.buttons.ExBtn;
+import me.creese.solitaire.menu.buttons.MusicBtn;
+import me.creese.solitaire.menu.buttons.SquareBtn;
 import me.creese.solitaire.menu.buttons.StdTransparentBtn;
+import me.creese.solitaire.menu.buttons.SwitchLevelBtn;
 import me.creese.solitaire.menu.buttons.ThemeBtn;
 import me.creese.solitaire.util.P;
+import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 
@@ -28,6 +33,27 @@ public class SettingsScreen extends GameView {
         addActor(new ThemeBtn(root));
         addActor(new ContinueGameBtn(root));
         addActor(new CoinCounter(root));
+
+        SquareBtn videoBtn = new SquareBtn(root);
+        videoBtn.setMode(SquareBtn.Mode.WATCH_VIDEO);
+        SquareBtn adBtn = new SquareBtn(root);
+        adBtn.setMode(SquareBtn.Mode.DISABLE_AD);
+        SquareBtn instBtn = new SquareBtn(root);
+        instBtn.setMode(SquareBtn.Mode.INST);
+        addActor(videoBtn);
+        addActor(adBtn);
+        addActor(instBtn);
+
+
+        TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
+        addActor(new MusicBtn(prepare));
+        addActor(new ExBtn(prepare));
+        addActor(new SwitchLevelBtn(prepare));
+    }
+
+    @Override
+    public void onBackPress() {
+        getRoot().showGameView(GameScreen.class);
     }
 
     @Override

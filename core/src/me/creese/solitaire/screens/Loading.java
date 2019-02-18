@@ -142,6 +142,13 @@ public class Loading extends GameView {
             }
         });
 
+        prep.addDraw(FTextures.BIG_SQUARE_BTN, 288, 288, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.rectRound(bX,bY,288,288,41);
+            }
+        });
+
 
         prep.start();
 

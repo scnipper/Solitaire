@@ -8,4 +8,5 @@ public class FTextures {
     public static final int SHADOW_CARD         = 1004;
     public static final int DEF_BUTTON_SETTINGS = 1005;
     public static final int DEF_BUTTON_BIG      = 1006;
+    public static final int BIG_SQUARE_BTN      = 1007;
 }

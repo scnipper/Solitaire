@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 
 import me.creese.solitaire.screens.Loading;
+import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.FontUtil;
 import me.creese.solitaire.util.P;
@@ -19,7 +22,7 @@ public class ContinueGameBtn extends Actor {
     private final BitmapFont font;
     private final Sprite back;
 
-    public ContinueGameBtn(Display root) {
+    public ContinueGameBtn(final Display root) {
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
@@ -28,6 +31,12 @@ public class ContinueGameBtn extends Actor {
         back.setColor(P.YELLOW_COLOR);
 
         setBounds(P.WIDTH/2-back.getWidth()/2,638,back.getWidth(),back.getHeight());
+        addListener(new ActorGestureListener(){
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                root.getGameViewForName(SettingsScreen.class).onBackPress();
+            }
+        });
     }
 
     @Override

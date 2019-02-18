@@ -30,6 +30,7 @@ public class CellGame extends BaseGame {
     private boolean lockBackStep;
     private EmptyCardDeck emptyCardDeck;
     private Menu menu;
+    private boolean isStarted;
 
 
     public CellGame() {
@@ -45,6 +46,11 @@ public class CellGame extends BaseGame {
 
     @Override
     public void start() {
+
+        if(isStarted) return;
+
+        isStarted = true;
+
         steps.clear();
         menu = getRoot().getGameViewForName(GameScreen.class).getMenu();
         menu.getTopScoreView().startTime();
