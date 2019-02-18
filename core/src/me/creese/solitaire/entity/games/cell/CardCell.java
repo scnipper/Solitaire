@@ -124,14 +124,18 @@ public class CardCell extends Card {
         final ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
         final ArrayList<CardCell> cells = stackCard.get(child.getStackNum());
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
-        if (child.getNumberCard() == prevCard && !child.isDrawBack() && (num >= 7 || child.getColorCard() != getColorCard()) && (num < 7 || cells.size() <= 1 || child.getCardType().equals(getCardType()))) {
+        if (child.getNumberCard() == prevCard && !child.isDrawBack()) {
 
             final int numScoreAdd;
             if (num >= 7) {
                 // поместить на конечный стек карту можно только если она в самом конце стека
-                if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM)
+                if (posInStack != tmpStack.size() - 1
+                        && stackNum != CellGame.CARD_DECK_NUM
+                        || !child.getCardType().equals(getCardType()))
                     return false;
+
                 numScoreAdd = 20;
+                //тени
                 if (num != CellGame.CARD_DECK_NUM) {
                     ArrayList<CardCell> c = stackCard.get(num);
 
@@ -146,8 +150,13 @@ public class CardCell extends Card {
 
 
             } else {
+                if(child.getColorCard() == getColorCard())
+                    return false;
+
                 numScoreAdd = (getNumberCard() * 2) + 5;
             }
+
+
             parent.getMenu().getTopScoreView().addScore(numScoreAdd);
 
             parent.getMenu().getTopScoreView().iterateStep();

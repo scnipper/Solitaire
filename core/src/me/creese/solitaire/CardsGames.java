@@ -20,10 +20,12 @@ public class CardsGames extends Display {
 
     @Override
     public void create() {
+        Gdx.input.setCatchBackKey(true);
         setBackgroundColor(P.BACKGROUND_COLOR);
         addListGameViews(new Loading(this));
         showGameView(Loading.class);
         P.get().pref = Gdx.app.getPreferences("cell_settings");
+
 
     }
 

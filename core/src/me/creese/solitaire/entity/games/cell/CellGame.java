@@ -82,7 +82,7 @@ public class CellGame extends BaseGame {
                     addActor(card);
                 }
             } else {
-                PlaceCard placeCard = new PlaceCard(33 + ((i-7) * 148), 1439, me.creese.solitaire.entity.CardType.DIAMONDS, 1);
+                PlaceCard placeCard = new PlaceCard(33 + ((i-7) * 148), 1439, CardType.getForNum(i-7), 1);
                 placeCard.setStackNum(i);
                 placeCard.posStack(0);
                 stackCard.get(i).add(placeCard);
