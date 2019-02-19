@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 
+import me.creese.solitaire.screens.CoinsScreen;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.FontUtil;
@@ -21,7 +24,7 @@ public class CoinCounter extends Actor {
     private final Texture coin;
     private final Texture plusIcon;
 
-    public CoinCounter(Display root) {
+    public CoinCounter(final Display root) {
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
@@ -30,6 +33,12 @@ public class CoinCounter extends Actor {
         setBounds(P.WIDTH/2-back.getWidth()/2,1222,back.getWidth(),back.getHeight());
         coin = new Texture("coin.png");
         plusIcon = new Texture("plus_icon.png");
+        addListener(new ActorGestureListener(){
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                root.showGameView(CoinsScreen.class);
+            }
+        });
     }
 
     @Override

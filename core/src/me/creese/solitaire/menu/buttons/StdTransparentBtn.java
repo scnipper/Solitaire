@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 
 import me.creese.solitaire.screens.Loading;
+import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.FontUtil;
 import me.creese.solitaire.util.P;
@@ -25,7 +28,7 @@ public class StdTransparentBtn extends Actor {
         RULE,RESTART,EXIT
     }
 
-    public StdTransparentBtn(Display root) {
+    public StdTransparentBtn(final Display root) {
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
@@ -34,6 +37,23 @@ public class StdTransparentBtn extends Actor {
         setX(P.WIDTH/2-back.getWidth()/2);
         setWidth(back.getWidth());
         setHeight(back.getHeight());
+        addListener(new ActorGestureListener(){
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                switch (mode) {
+                    case RESTART:
+
+                        break;
+                    case RULE:
+
+                        break;
+
+                    case EXIT:
+                        root.showGameView(SettingsScreen.class);
+                        break;
+                }
+            }
+        });
 
     }
 

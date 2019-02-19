@@ -26,6 +26,10 @@ public class TopScoreView extends Actor {
     private final PolygonRegion polygonRegion;
     private final BitmapFont fontBold;
     private final Display root;
+    private final static String STEPS = "Ходы";
+    private final static String SCORE = "Счёт";
+    private final static String HARD = "Сложный";
+    private final static String EASEY = "Легкий";
     private boolean isTimeStart;
     private float time;
     private int step;
@@ -33,21 +37,17 @@ public class TopScoreView extends Actor {
     private Sprite topRect;
     private float targetWidthFont;
     private Color fontColor;
+    private String customHeadText;
 
     public TopScoreView(Display root) {
         this.root = root;
         setBounds(0, P.HEIGHT-226,P.WIDTH,226);
 
-       Pixmap pix = new Pixmap(1,1,Pixmap.Format.RGBA8888);
-        pix.setColor(Color.WHITE);
-        pix.fill();
 
-        Texture textureBack = new Texture(pix);
-        pix.dispose();
 
         fontColor = new Color(0x678A6Cff);
 
-        polygonRegion = new PolygonRegion(new TextureRegion(textureBack), new float[]{
+        polygonRegion = new PolygonRegion(new TextureRegion(P.get().whiteDot), new float[]{
                 0, 0,
                 0, getHeight(),
                 P.WIDTH, getHeight(),
@@ -107,6 +107,10 @@ public class TopScoreView extends Actor {
         isTimeStart = timeStart;
     }
 
+    public void setCustomHeadText(String customHeadText) {
+        this.customHeadText = customHeadText;
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -142,15 +146,18 @@ public class TopScoreView extends Actor {
         fontBold.getData().setScale(0.6f);
         fontBold.draw(batch,formatTime((long) time),0,P.HEIGHT-44,P.WIDTH,Align.center,false);
         fontBold.setColor(P.TOP_MENU_COLOR);
-        fontBold.draw(batch,P.get().pref.getBoolean(S.DIF_CELL) ? "Сложный" : "Легкий",0,P.HEIGHT-193,P.WIDTH,Align.center,false);
+        if (customHeadText != null) {
+            fontBold.draw(batch,customHeadText,0,P.HEIGHT-193,P.WIDTH,Align.center,false);
+        } else
+        fontBold.draw(batch,P.get().pref.getBoolean(S.DIF_CELL) ? HARD : EASEY,0,P.HEIGHT-193,P.WIDTH,Align.center,false);
         fontBold.setColor(Color.WHITE);
         fontBold.getData().setScale(1);
 
         font.getData().setScale(0.42f);
 
         font.setColor(fontColor);
-        font.draw(batch,"Ходы",0,P.HEIGHT-77,targetWidthFont,Align.center,false);
-        font.draw(batch,"Счёт",P.WIDTH-targetWidthFont,P.HEIGHT-77,targetWidthFont,Align.center,false);
+        font.draw(batch, STEPS,0,P.HEIGHT-77,targetWidthFont,Align.center,false);
+        font.draw(batch, SCORE,P.WIDTH-targetWidthFont,P.HEIGHT-77,targetWidthFont,Align.center,false);
         font.setColor(Color.WHITE);
         font.getData().setScale(1);
 

@@ -3,6 +3,7 @@ package me.creese.solitaire.screens;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import me.creese.solitaire.menu.ButtonsSquare;
 import me.creese.solitaire.menu.CoinCounter;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.buttons.ContinueGameBtn;
@@ -18,6 +19,7 @@ import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 
 public class SettingsScreen extends GameView {
+    private final ButtonsSquare buttonsSquare;
     private Menu menu;
 
     public SettingsScreen(Display root) {
@@ -34,15 +36,9 @@ public class SettingsScreen extends GameView {
         addActor(new ContinueGameBtn(root));
         addActor(new CoinCounter(root));
 
-        SquareBtn videoBtn = new SquareBtn(root);
-        videoBtn.setMode(SquareBtn.Mode.WATCH_VIDEO);
-        SquareBtn adBtn = new SquareBtn(root);
-        adBtn.setMode(SquareBtn.Mode.DISABLE_AD);
-        SquareBtn instBtn = new SquareBtn(root);
-        instBtn.setMode(SquareBtn.Mode.INST);
-        addActor(videoBtn);
-        addActor(adBtn);
-        addActor(instBtn);
+        buttonsSquare = new ButtonsSquare(root);
+        root.addTransitObject(buttonsSquare);
+
 
 
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
@@ -61,7 +57,7 @@ public class SettingsScreen extends GameView {
         super.addRoot(display);
         if (display != null) {
             menu = display.getTransitObject(Menu.class);
-
+            addActor(buttonsSquare);
             menu.getBottomMenu().setVisible(false);
             menu.getTopScoreView().setTimeStart(false);
             addActor(menu);
