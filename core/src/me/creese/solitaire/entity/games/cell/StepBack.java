@@ -1,8 +1,11 @@
 package me.creese.solitaire.entity.games.cell;
 
 public class StepBack {
+    // из колоды
     public final int fromStack;
+    // в колоду
     public final int toStack;
+    // из позиции
     public final int fromPos;
     public final int offsetX;
 
@@ -13,9 +16,12 @@ public class StepBack {
     public int countOffsets = 0;
 
     public int toPosAdd = -1;
+    // если колода была перемешана
     public boolean forwardDeck;
 
     public int minusScore = 0;
+    // перевернута ли предыдущая карта
+    public boolean drawBackPrevCards;
 
 
     public StepBack(int fromStack, int toStack, int fromPos, int offsetX) {

@@ -76,22 +76,6 @@ public class Card extends Actor {
 
     }
 
-    /*public void drawShadow(Shapes shapes) {
-        if(isDrawShadow) {
-            float color = Color.BLACK.toFloatBits();
-            float clear = Color.YELLOW.toFloatBits();
-            int sizeShadow = 6;
-            short center = shapes.vertexAdd(getX() + getWidth() / 2, getY() + getHeight() / 2, color);
-
-            short vertex1 = shapes.vertexAdd(getX() - sizeShadow, getY() - sizeShadow, clear);
-            short vertex2 = shapes.vertexAdd(getX() - sizeShadow, getY() + getHeight() + sizeShadow, clear);
-            short vertex3 = shapes.vertexAdd(getX() + getWidth() + sizeShadow, getY() + getHeight() + sizeShadow, clear);
-            short vertex4 = shapes.vertexAdd(getX() + getWidth() + sizeShadow, getY() - sizeShadow, clear);
-
-            shapes.indicesAdd(center, vertex1, vertex2, center, vertex2, vertex3, center, vertex3, vertex4, center, vertex4, vertex1);
-        }
-    }*/
-
     public void doubleClick() {
     }
 
