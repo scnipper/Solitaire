@@ -11,6 +11,7 @@ import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.menu.settings.DifficultSettings;
 import me.creese.solitaire.menu.settings.SettingsMenu;
 import me.creese.solitaire.screens.SettingsScreen;
+import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
@@ -31,16 +32,9 @@ public class SettingsBtn extends Actor {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                root.showGameView(SettingsScreen.class);
-                /*Display root = ((BaseGame) getParent().getParent()).getRoot();
+                //root.showGameView(SettingsScreen.class);
+                root.showGameView(WinScreen.class);
 
-                GameScreen gameScreen = root.getGameViewForName(GameScreen.class);
-                gameScreen.showBlack();
-                gameScreen.addStage(gameScreen.getStageFit());
-                dificult.setRoot(root);
-                gameScreen.getStageFit().addActor(dificult);
-
-                Gdx.input.setInputProcessor(new InputMultiplexer(gameScreen.getStageFit(),gameScreen.getStageScreen()));*/
             }
         });
 

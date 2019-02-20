@@ -9,4 +9,6 @@ public class FTextures {
     public static final int DEF_BUTTON_SETTINGS = 1005;
     public static final int DEF_BUTTON_BIG      = 1006;
     public static final int BIG_SQUARE_BTN      = 1007;
+    public static final int WIN_CIRCLE_FILL     = 1008;
+    public static final int WIN_CIRCLE          = 1009;
 }

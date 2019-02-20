@@ -10,6 +10,7 @@ import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.Card;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.S;
+import me.creese.util.display.Display;
 
 public class CardCell extends Card {
 
@@ -24,8 +25,8 @@ public class CardCell extends Card {
     private boolean isSubCard;
     private int offsetX;
 
-    public CardCell(float x, float y, CardType cardType, int numberCard) {
-        super(x, y, cardType, numberCard);
+    public CardCell(float x, float y, CardType cardType, int numberCard, Display root) {
+        super(x, y, cardType, numberCard,root);
     }
 
     /**

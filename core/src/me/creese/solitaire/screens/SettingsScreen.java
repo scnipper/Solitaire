@@ -6,10 +6,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import me.creese.solitaire.menu.ButtonsSquare;
 import me.creese.solitaire.menu.CoinCounter;
 import me.creese.solitaire.menu.Menu;
-import me.creese.solitaire.menu.buttons.ContinueGameBtn;
+import me.creese.solitaire.menu.buttons.ContinueBtn;
+import me.creese.solitaire.menu.buttons.DefYellowBtn;
 import me.creese.solitaire.menu.buttons.ExBtn;
 import me.creese.solitaire.menu.buttons.MusicBtn;
-import me.creese.solitaire.menu.buttons.SquareBtn;
 import me.creese.solitaire.menu.buttons.StdTransparentBtn;
 import me.creese.solitaire.menu.buttons.SwitchLevelBtn;
 import me.creese.solitaire.menu.buttons.ThemeBtn;
@@ -33,7 +33,7 @@ public class SettingsScreen extends GameView {
         restartBtn.setMode(StdTransparentBtn.Mode.RESTART);
         addActor(restartBtn);
         addActor(new ThemeBtn(root));
-        addActor(new ContinueGameBtn(root));
+        addActor(new ContinueBtn(root));
         addActor(new CoinCounter(root));
 
         buttonsSquare = new ButtonsSquare(root);

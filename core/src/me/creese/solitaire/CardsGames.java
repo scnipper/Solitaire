@@ -13,6 +13,7 @@ import me.creese.solitaire.screens.CoinsScreen;
 import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.screens.SettingsScreen;
+import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
@@ -43,6 +44,7 @@ public class CardsGames extends Display {
         addListGameViews(new GameScreen(this));
         addListGameViews(new SettingsScreen(this));
         addListGameViews(new CoinsScreen(this));
+        addListGameViews(new WinScreen(this));
         getGameViewForName(GameScreen.class).setBaseGame(new CellGame());
         showGameView(GameScreen.class);
     }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.TexturePrepare;
+import me.creese.util.display.Display;
 
 public class Card extends Actor {
     public static final int RED_CARD = 0;
@@ -20,8 +21,9 @@ public class Card extends Actor {
     private final CardType cardType;
     private final Vector2 startTouch;
     private final Vector2 startPos;
-    private final Texture textureBack;
-    protected Texture texture;
+    private final Sprite textureBack;
+    private final Display root;
+    protected Sprite texture;
     private int numberCard;
     private boolean isMove;
     private boolean drawBack;
@@ -29,14 +31,15 @@ public class Card extends Actor {
     private boolean isDrawShadow;
     private Sprite shadow;
 
-    public Card(float x, float y, CardType cardType, int numberCard) {
+    public Card(float x, float y, CardType cardType, int numberCard, Display root) {
+        this.root = root;
         this.numberCard = numberCard;
         this.cardType = cardType;
         startTouch = new Vector2();
         startPos = new Vector2(x, y);
         isDrawShadow = true;
-        texture = new Texture("cards/c_" + numberCard + "_" + cardType.name().substring(0, 1) + ".png");
-        textureBack = new Texture("cards/c_back.png");
+        texture = new Sprite(new Texture("cards/c_" + numberCard + "_" + cardType.name().substring(0, 1) + ".png"));
+        textureBack = new Sprite(new Texture("cards/c_back.png"));
         setBounds(x, y, texture.getWidth(), texture.getHeight());
 
 
@@ -154,10 +157,18 @@ public class Card extends Actor {
     }
 
     @Override
+    public void setRotation(float degrees) {
+        super.setRotation(degrees);
+        shadow.setRotation(degrees);
+        texture.setRotation(degrees);
+        textureBack.setRotation(degrees);
+    }
+
+    @Override
     protected void setParent(Group parent) {
         super.setParent(parent);
         if (parent != null) {
-            TexturePrepare prepare = ((BaseGame) parent).getRoot().getTransitObject(TexturePrepare.class);
+            TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
             shadow = prepare.getByName(FTextures.SHADOW_CARD);
             shadow.setColor(Color.BLACK);
@@ -171,9 +182,12 @@ public class Card extends Actor {
             shadow.draw(batch);
         }
         if (drawBack) {
-
-            batch.draw(textureBack, getX(), getY());
-        } else batch.draw(texture, getX(), getY());
+            textureBack.setPosition(getX(),getY());
+            textureBack.draw(batch);
+        } else {
+            texture.setPosition(getX(),getY());
+            texture.draw(batch);
+        }
 
     }
 

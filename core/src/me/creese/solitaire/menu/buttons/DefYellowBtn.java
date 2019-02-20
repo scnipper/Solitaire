@@ -16,13 +16,14 @@ import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
 
-public class ContinueGameBtn extends Actor {
+public class DefYellowBtn extends Actor {
 
-    private static final String TEXT = "Продолжить игру";
+
     private final BitmapFont font;
     private final Sprite back;
+    protected String text = "";
 
-    public ContinueGameBtn(final Display root) {
+    public DefYellowBtn(final Display root) {
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
@@ -30,20 +31,21 @@ public class ContinueGameBtn extends Actor {
 
         back.setColor(P.YELLOW_COLOR);
 
-        setBounds(P.WIDTH/2-back.getWidth()/2,638,back.getWidth(),back.getHeight());
-        addListener(new ActorGestureListener(){
-            @Override
-            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                root.getGameViewForName(SettingsScreen.class).onBackPress();
-            }
-        });
+        setX(P.WIDTH/2-back.getWidth()/2);
+        setWidth(back.getWidth());
+        setHeight(back.getHeight());
+
     }
+
+
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         back.setPosition(getX(),getY());
         back.draw(batch);
 
-        FontUtil.drawText(batch,font,TEXT,getX(),getY(),0.65f,P.SUB_YELLOW_COLOR,getWidth(), Align.center,false,getHeight());
+        FontUtil.drawText(batch,font,text,getX(),getY(),0.65f,P.SUB_YELLOW_COLOR,getWidth(), Align.center,false,getHeight());
+
+
     }
 }

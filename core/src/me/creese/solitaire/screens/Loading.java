@@ -69,11 +69,11 @@ public class Loading extends GameView {
         final Shapes shape = new Shapes();
         prep.setPaddingX(2);
         prep.setPaddingY(2);
-        //prep.setDebugImage(true);
+       // prep.setDebugImage(true);
         prep.setPreAndPostDraw(new TexturePrepare.PreAndPostDraw() {
             @Override
             public void drawPre() {
-                Gdx.gl.glDepthMask(false);
+                //Gdx.gl.glDepthMask(false);
                 Gdx.gl.glEnable(GL20.GL_BLEND);
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             }
@@ -81,7 +81,7 @@ public class Loading extends GameView {
             @Override
             public void drawPost() {
                 shape.flush();
-                Gdx.gl.glDepthMask(true);
+                //Gdx.gl.glDepthMask(true);
             }
         });
         shape.setProjMatrix(prep.getCamera().combined);
@@ -149,6 +149,21 @@ public class Loading extends GameView {
             }
         });
 
+        prep.addDraw(FTextures.WIN_CIRCLE_FILL, 652, 652, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+                shape.circle(bX,bY, 326);
+            }
+        });
+        prep.addDraw(FTextures.WIN_CIRCLE, 696, 696, new TexturePrepare.Draw() {
+            @Override
+            public void draw(float bX, float bY) {
+
+                shape.circleLine(bX,bY, 348,7);
+
+
+            }
+        });
 
         prep.start();
 
