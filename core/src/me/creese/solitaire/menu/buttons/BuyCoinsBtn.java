@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 
+import me.creese.solitaire.menu.Theme;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.FontUtil;
@@ -27,7 +28,7 @@ public class BuyCoinsBtn extends Actor {
         this.price = price;
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
         back = prepare.getByName(FTextures.DEF_BUTTON_SETTINGS);
-        back.setColor(P.SUB_BACKGROUND_COLOR);
+        back.setColor(Theme.getCurrentTheme().getSubColor());
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         setBounds(P.WIDTH/2-back.getWidth()/2,y,back.getWidth(),back.getHeight());
         back.setPosition(getX(),getY());

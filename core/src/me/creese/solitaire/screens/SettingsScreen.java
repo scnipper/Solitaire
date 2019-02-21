@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import me.creese.solitaire.menu.ButtonsSquare;
 import me.creese.solitaire.menu.CoinCounter;
 import me.creese.solitaire.menu.Menu;
+import me.creese.solitaire.menu.Theme;
 import me.creese.solitaire.menu.buttons.ContinueBtn;
 import me.creese.solitaire.menu.buttons.DefYellowBtn;
 import me.creese.solitaire.menu.buttons.ExBtn;
@@ -20,12 +21,12 @@ import me.creese.util.display.GameView;
 
 public class SettingsScreen extends GameView {
     private final ButtonsSquare buttonsSquare;
+    private final CoinCounter coinCounter;
     private Menu menu;
 
     public SettingsScreen(Display root) {
         super(new FitViewport(P.WIDTH,P.HEIGHT), root,new PolygonSpriteBatch());
 
-        setBackgroundColor(P.BACKGROUND_COLOR);
         StdTransparentBtn ruleBtn = new StdTransparentBtn(root);
         ruleBtn.setMode(StdTransparentBtn.Mode.RULE);
         addActor(ruleBtn);
@@ -34,7 +35,8 @@ public class SettingsScreen extends GameView {
         addActor(restartBtn);
         addActor(new ThemeBtn(root));
         addActor(new ContinueBtn(root));
-        addActor(new CoinCounter(root));
+        coinCounter = new CoinCounter(root);
+        root.addTransitObject(coinCounter);
 
         buttonsSquare = new ButtonsSquare(root);
         root.addTransitObject(buttonsSquare);
@@ -56,11 +58,13 @@ public class SettingsScreen extends GameView {
     public void addRoot(Display display) {
         super.addRoot(display);
         if (display != null) {
+
             menu = display.getTransitObject(Menu.class);
             addActor(buttonsSquare);
             menu.getBottomMenu().setVisible(false);
             menu.getTopScoreView().setTimeStart(false);
             addActor(menu);
+            addActor(coinCounter);
         } else {
             menu.getBottomMenu().setVisible(true);
             menu.getTopScoreView().setTimeStart(true);

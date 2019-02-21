@@ -32,8 +32,8 @@ public class SettingsBtn extends Actor {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                //root.showGameView(SettingsScreen.class);
-                root.showGameView(WinScreen.class);
+                root.showGameView(SettingsScreen.class);
+                //root.showGameView(WinScreen.class);
 
             }
         });

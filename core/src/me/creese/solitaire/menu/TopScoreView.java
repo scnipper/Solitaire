@@ -140,7 +140,7 @@ public class TopScoreView extends Actor {
         ((PolygonSpriteBatch) batch).draw(polygonRegion,getX(),getY());
         batch.setColor(Color.WHITE);
 
-        topRect.setColor(P.BACKGROUND_COLOR);
+        topRect.setColor(Theme.getCurrentTheme().getMainColor());
         topRect.draw(batch);
 
         fontBold.getData().setScale(0.6f);

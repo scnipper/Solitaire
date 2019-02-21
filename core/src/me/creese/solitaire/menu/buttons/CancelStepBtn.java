@@ -21,6 +21,7 @@ import me.creese.util.display.Display;
 
 public class CancelStepBtn extends Actor {
 
+    private static final String TEXT = "Ход назад";
     private final BitmapFont font;
     private final Texture icon;
     private final Display root;
@@ -62,7 +63,7 @@ public class CancelStepBtn extends Actor {
         batch.draw(icon,getX()+79,getY()+(getHeight()/2 - icon.getHeight()/2));
 
         font.getData().setScale(0.45f);
-        font.draw(batch,"Ход назад",getX()+151,getY()+(getHeight()/2+(font.getData().getFirstGlyph().height*0.45f)/2),
+        font.draw(batch,TEXT,getX()+151,getY()+(getHeight()/2+(font.getData().getFirstGlyph().height*0.45f)/2),
                 getWidth()-151, Align.center,false);
         font.getData().setScale(1f);
     }

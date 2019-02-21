@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 
 import me.creese.solitaire.entity.games.cell.CellGame;
 import me.creese.solitaire.menu.Menu;
+import me.creese.solitaire.menu.Theme;
 import me.creese.solitaire.screens.CoinsScreen;
 import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.screens.SettingsScreen;
+import me.creese.solitaire.screens.ThemesScreen;
 import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
@@ -25,7 +27,10 @@ public class CardsGames extends Display {
     @Override
     public void create() {
         Gdx.input.setCatchBackKey(true);
-        setBackgroundColor(P.BACKGROUND_COLOR);
+
+        Theme.init();
+
+        setBackgroundColor(Theme.getCurrentTheme().getMainColor());
         addListGameViews(new Loading(this));
         showGameView(Loading.class);
         P.get().pref = Gdx.app.getPreferences("cell_settings");
@@ -45,6 +50,7 @@ public class CardsGames extends Display {
         addListGameViews(new SettingsScreen(this));
         addListGameViews(new CoinsScreen(this));
         addListGameViews(new WinScreen(this));
+        addListGameViews(new ThemesScreen(this));
         getGameViewForName(GameScreen.class).setBaseGame(new CellGame());
         showGameView(GameScreen.class);
     }

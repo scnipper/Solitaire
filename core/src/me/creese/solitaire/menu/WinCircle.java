@@ -50,8 +50,8 @@ public class WinCircle extends Group {
         circle = prepare.getByName(FTextures.WIN_CIRCLE);
         circleFill = prepare.getByName(FTextures.WIN_CIRCLE_FILL);
 
-        circle.setColor(P.SUB_BACKGROUND_COLOR);
-        circleFill.setColor(P.SUB_BACKGROUND_COLOR);
+        circle.setColor(Theme.getCurrentTheme().getSubColor());
+        circleFill.setColor(Theme.getCurrentTheme().getSubColor());
         circle.setPosition(P.WIDTH/2-circle.getWidth()/2,448);
         circleFill.setPosition(circle.getX()+22,circle.getY()+22);
 
@@ -61,7 +61,7 @@ public class WinCircle extends Group {
         coin = new Texture("coin_big.png");
 
         shapes = new Shapes();
-        shapes.setColor(P.SUB_BACKGROUND_COLOR);
+        shapes.setColor(Theme.getCurrentTheme().getSubColor());
 
         pointLines = new ArrayList<>();
         linesMove = new ArrayList<>();
