@@ -38,6 +38,7 @@ public abstract class BaseGame extends Group {
     public abstract void start();
     public abstract void restart();
     public abstract void cancelStep();
+    public abstract void showHelp();
 
     public Display getRoot() {
         return root;

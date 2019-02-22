@@ -3,6 +3,8 @@ package me.creese.solitaire.entity.games.cell;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class CellGame extends BaseGame {
     private EmptyCardDeck emptyCardDeck;
     private Menu menu;
     private boolean isStarted;
+    private HelpShow currHelp;
 
 
     public CellGame() {
@@ -63,7 +66,7 @@ public class CellGame extends BaseGame {
             stackCard.add(new ArrayList<CardCell>());
             if (i < 7) {
 
-                EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1,getRoot());
+                EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1, getRoot());
                 cardFirst.setStackNum(i);
                 cardFirst.posStack(0);
                 stackCard.get(i).add(cardFirst);
@@ -74,7 +77,7 @@ public class CellGame extends BaseGame {
                     DeckItem deckItem = deck.get(indexDeck);
 
 
-                    CardCell card = new CardCell(33 + (i * 148), 1213 - (j * SPACE_BETWEEN_TWO_CARDS), deckItem.getType(), deckItem.getNumber(),getRoot());
+                    CardCell card = new CardCell(33 + (i * 148), 1213 - (j * SPACE_BETWEEN_TWO_CARDS), deckItem.getType(), deckItem.getNumber(), getRoot());
                     deck.remove(indexDeck);
 
                     if (j == i) {
@@ -86,7 +89,7 @@ public class CellGame extends BaseGame {
                     addActor(card);
                 }
             } else {
-                PlaceCard placeCard = new PlaceCard(33 + ((i - 7) * 148), 1439, CardType.getForNum(i - 7), 1,getRoot());
+                PlaceCard placeCard = new PlaceCard(33 + ((i - 7) * 148), 1439, CardType.getForNum(i - 7), 1, getRoot());
                 placeCard.setStackNum(i);
                 placeCard.posStack(0);
                 stackCard.get(i).add(placeCard);
@@ -97,7 +100,7 @@ public class CellGame extends BaseGame {
         ArrayList<CardCell> cardCells = new ArrayList<>();
         stackCard.add(cardCells);
 
-        emptyCardDeck = new EmptyCardDeck(922, 1439, CardType.DIAMONDS, 1, 11,getRoot());
+        emptyCardDeck = new EmptyCardDeck(922, 1439, CardType.DIAMONDS, 1, 11, getRoot());
         addActor(emptyCardDeck);
 
         for (int i = 0; i < deck.size(); i++) {
@@ -105,7 +108,7 @@ public class CellGame extends BaseGame {
             int index = random.nextInt(deck.size());
             DeckItem deckItem = deck.get(index);
 
-            CardCell card = new CardCell(922, 1439, deckItem.getType(), deckItem.getNumber(),getRoot());
+            CardCell card = new CardCell(922, 1439, deckItem.getType(), deckItem.getNumber(), getRoot());
 
 
             card.setDrawBack(true);
@@ -138,7 +141,7 @@ public class CellGame extends BaseGame {
         for (int i = 0; i < split.length - 1; i++) {
             ArrayList<CardCell> cardCells = new ArrayList<>();
             stackCard.add(cardCells);
-            EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1,getRoot());
+            EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1, getRoot());
             cardFirst.setStackNum(i);
             cardFirst.posStack(0);
             stackCard.get(i).add(cardFirst);
@@ -150,7 +153,7 @@ public class CellGame extends BaseGame {
                 String[] options = cards[j].split(",");
 
 
-                CardCell card = new CardCell(Float.valueOf(options[2]), Float.valueOf(options[3]), CardType.valueOf(options[0]), Integer.valueOf(options[1]),getRoot());
+                CardCell card = new CardCell(Float.valueOf(options[2]), Float.valueOf(options[3]), CardType.valueOf(options[0]), Integer.valueOf(options[1]), getRoot());
 
                 if (j == i) {
                     card.setMove(true);
@@ -165,7 +168,7 @@ public class CellGame extends BaseGame {
         for (int i = 7; i < 11; i++) {
             ArrayList<CardCell> cardCells = new ArrayList<>();
             stackCard.add(cardCells);
-            PlaceCard placeCard = new PlaceCard(33 + ((i - 7) * 148), 1439, CardType.getForNum(i - 7), 1,getRoot());
+            PlaceCard placeCard = new PlaceCard(33 + ((i - 7) * 148), 1439, CardType.getForNum(i - 7), 1, getRoot());
             placeCard.setStackNum(i);
             placeCard.posStack(0);
             cardCells.add(placeCard);
@@ -186,7 +189,7 @@ public class CellGame extends BaseGame {
 
             String[] options = last[j].split(",");
 
-            CardCell card = new CardCell(Float.valueOf(options[2]), Float.valueOf(options[3]), CardType.valueOf(options[0]), Integer.valueOf(options[1]),getRoot());
+            CardCell card = new CardCell(Float.valueOf(options[2]), Float.valueOf(options[3]), CardType.valueOf(options[0]), Integer.valueOf(options[1]), getRoot());
 
 
             card.setDrawBack(true);
@@ -330,7 +333,7 @@ public class CellGame extends BaseGame {
                     if (stepBack.toStack == CARD_DECK_NUM) {
                         int plus = 0;
 
-                        if(P.get().pref.getBoolean(S.DIF_CELL)) {
+                        if (P.get().pref.getBoolean(S.DIF_CELL)) {
                             plus = FROM_DECK_HARD_DIFICULT;
                         } else {
                             plus = FROM_DECK_DEF_DIFICULT;
@@ -383,6 +386,46 @@ public class CellGame extends BaseGame {
         }
     }
 
+    @Override
+    public void showHelp() {
+        if (currHelp != null) {
+            ArrayList<CardCell> fromStack = stackCard.get(currHelp.getFromStack());
+            ArrayList<CardCell> toStack = stackCard.get(currHelp.getToStack());
+
+            CardCell toCard = toStack.get(toStack.size() - 1);
+
+            final Vector2 tmpStartPos = new Vector2();
+
+            for (int i = currHelp.getFromPos(); i < fromStack.size(); i++) {
+                final CardCell moveCard = fromStack.get(i);
+                moveCard.getShadow().setColor(Color.YELLOW);
+                moveCard.getShadow().setScale(1.1f);
+                tmpStartPos.set(moveCard.getStartPos());
+                Vector2 movePos = new Vector2();
+                if(toStack.size() > 1 && currHelp.getToStack() < 7)
+                movePos.set(toCard.getX(), toCard.getY() - (SPACE_BETWEEN_TWO_OPEN_CARDS*(i - currHelp.getFromPos()+1)));
+                else
+                movePos.set(toCard.getX(), toCard.getY()- (SPACE_BETWEEN_TWO_OPEN_CARDS*(i - currHelp.getFromPos())));
+
+                moveCard.setZIndex(99999);
+                moveCard.addAction(Actions.sequence(Actions.moveTo(movePos.x, movePos.y, 0.4f),
+                        Actions.delay(0.3f), Actions.moveTo(tmpStartPos.x, tmpStartPos.y, 0.5f),Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                moveCard.getShadow().setColor(Color.BLACK);
+                                moveCard.getShadow().setScale(1);
+                            }
+                        })));
+
+                if(currHelp.getFromStack() == CARD_DECK_NUM) break;
+            }
+
+
+
+            currHelp = null;
+        }
+    }
+
     /**
      * Один шаг автоматической сборки
      */
@@ -409,7 +452,7 @@ public class CellGame extends BaseGame {
                     if (!cardDeck.isDrawBack()) {
                         for (int k = 7; k < 11; k++) {
 
-                            if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false)) {
+                            if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false, false)) {
                                 cardDeck.moveToStartPosition();
 
                                 isEnd = false;
@@ -425,7 +468,7 @@ public class CellGame extends BaseGame {
                                 restartDeck();
                             } else {
                                 int pr = l - 1;
-                                if(pr >=0) {
+                                if (pr >= 0) {
                                     CardCell tmpCard = cardCells.get(pr);
                                     if (tmpCard.isDeckMode()) {
                                         tmpCard.openCardInDeck();
@@ -450,7 +493,7 @@ public class CellGame extends BaseGame {
 
                         ArrayList<CardCell> endCards = stackCard.get(k);
 
-                        if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false)) {
+                        if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false, false)) {
                             cardCell.moveToStartPosition();
 
                             break;
@@ -468,7 +511,6 @@ public class CellGame extends BaseGame {
 
             }
         }
-
 
 
     }
@@ -494,18 +536,19 @@ public class CellGame extends BaseGame {
      */
     public void checkToWin() {
 
-        if(getActions().size > 0) return;
+        if (getActions().size > 0) return;
 
         for (int i = 7; i < 11; i++) {
             ArrayList<CardCell> cardCells = stackCard.get(i);
 
 
-            if(cardCells.size() < 14) return;
+            if (cardCells.size() < 14) return;
         }
 
 
         getRoot().showGameView(WinScreen.class);
     }
+
     /**
      * Автоматическая сборка карт
      */
@@ -601,6 +644,57 @@ public class CellGame extends BaseGame {
     }
 
     /**
+     * Создание подсказки
+     */
+    public void makeHelp() {
+
+        for (int i = CARD_DECK_NUM; i >=0; i--) {
+            ArrayList<CardCell> cards = stackCard.get(i);
+
+            if(i < 7 || i == CARD_DECK_NUM) {
+                if (i == CARD_DECK_NUM) {
+                    for (int j = 0; j < cards.size(); j++) {
+                        CardCell card = cards.get(j);
+                        if (!card.isDrawBack()) {
+                            if(helpPlaceCard(card, i, j))
+                            return;
+                            else break;
+                        }
+                    }
+                } else {
+                    for (int j = 1; j < cards.size(); j++) {
+                        CardCell card = cards.get(j);
+                        if (helpPlaceCard(card, i, j)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    private boolean helpPlaceCard(CardCell card, int exceptStack,int fromPos) {
+        if (!card.isDrawBack()) {
+            for (int k = stackCard.size()-1; k >=0; k--) {
+                if (k != exceptStack && k != CARD_DECK_NUM) {
+                    ArrayList<CardCell> cardsSub = stackCard.get(k);
+                    if (cardsSub.size() > 0) {
+                        CardCell cardCell = cardsSub.get(cardsSub.size() - 1);
+
+                        if (card.tryMoveToPosition(k, cardCell, false, true)) {
+                            currHelp = new HelpShow(exceptStack, k, fromPos);
+                            System.out.println(currHelp);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Когда по 3 карты из колоды. Эта функция группирует уже разложенные карты в одну колоду
      */
     public void clearDeckFromSub(boolean isFast) {
@@ -627,16 +721,13 @@ public class CellGame extends BaseGame {
                 if (isFast) {
                     cardCell.setX(emptyCardDeck.getX() + FROM_DECK_HARD_DIFICULT);
                     cardCell.getStartPos().x = cardCell.getX();
-                }
-                else {
-                    deck.get(i).addAction(Actions.sequence(
-                            Actions.moveTo(emptyCardDeck.getX() + FROM_DECK_HARD_DIFICULT, emptyCardDeck.getY(), 0.3f),
-                            Actions.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    cardCell.getStartPos().x = cardCell.getX();
-                                }
-                            })));
+                } else {
+                    deck.get(i).addAction(Actions.sequence(Actions.moveTo(emptyCardDeck.getX() + FROM_DECK_HARD_DIFICULT, emptyCardDeck.getY(), 0.3f), Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            cardCell.getStartPos().x = cardCell.getX();
+                        }
+                    })));
                 }
                 deck.get(i).setSubCard(false);
 

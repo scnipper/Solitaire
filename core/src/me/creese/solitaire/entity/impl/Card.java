@@ -156,6 +156,10 @@ public class Card extends Actor {
         isDrawShadow = drawShadow;
     }
 
+    public Sprite getShadow() {
+        return shadow;
+    }
+
     @Override
     public void setRotation(float degrees) {
         super.setRotation(degrees);

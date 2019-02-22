@@ -122,7 +122,7 @@ public class CardCell extends Card {
 
 
     public boolean tryMoveToPosition(int num, CardCell child) {
-        return tryMoveToPosition(num, child, true);
+        return tryMoveToPosition(num, child, true,false);
     }
 
     /**
@@ -132,13 +132,15 @@ public class CardCell extends Card {
      * @param child
      * @return
      */
-    public boolean tryMoveToPosition(int num, CardCell child, boolean isCheckToAuto) {
+    public boolean tryMoveToPosition(int num, CardCell child, boolean isCheckToAuto,boolean justCheck) {
         final CellGame parent = (CellGame) getParent();
         ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
         final ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
         final ArrayList<CardCell> cells = stackCard.get(child.getStackNum());
         int prevCard = num < 7 ? getNumberCard() + 1 : getNumberCard() - 1;
         if (child.getNumberCard() == prevCard && !child.isDrawBack()) {
+
+
 
             final int numScoreAdd;
             if (num >= 7) {
@@ -150,7 +152,7 @@ public class CardCell extends Card {
 
                 numScoreAdd = 20;
                 //тени
-                if (num != CellGame.CARD_DECK_NUM) {
+                if (num != CellGame.CARD_DECK_NUM && !justCheck) {
                     ArrayList<CardCell> c = stackCard.get(num);
 
                     int n = c.size() - 2;
@@ -170,6 +172,7 @@ public class CardCell extends Card {
                 numScoreAdd = (getNumberCard() * 2) + 5;
             }
 
+            if(justCheck) return true;
 
             parent.getMenu().getTopScoreView().addScore(numScoreAdd);
 
@@ -246,9 +249,13 @@ public class CardCell extends Card {
                 }
             }
 
-            if (isCheckToAuto) parent.checkToAuto();
+            if (isCheckToAuto) {
+                parent.checkToAuto();
+                parent.makeHelp();
+            }
 
             parent.checkToWin();
+
 
             return true;
         }
@@ -347,6 +354,8 @@ public class CardCell extends Card {
         } else {
             parent.getMenu().getTopScoreView().iterateStep();
         }
+
+        parent.makeHelp();
 
     }
 

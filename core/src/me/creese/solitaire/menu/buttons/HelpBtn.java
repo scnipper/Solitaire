@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.util.FTextures;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.TexturePrepare;
@@ -19,10 +22,16 @@ public class HelpBtn extends Actor {
     private final Display root;
     private Sprite sprite;
 
-    public HelpBtn(Display root) {
+    public HelpBtn(final Display root) {
         this.root = root;
         setBounds(615,68,162,162);
         icon = new Texture("icon_help.png");
+        addListener(new ActorGestureListener(){
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                root.getGameViewForName(GameScreen.class).getBaseGame().showHelp();
+            }
+        });
     }
 
     @Override
