@@ -59,7 +59,7 @@ public class CellGame extends BaseGame {
         steps.clear();
         menu = getRoot().getGameViewForName(GameScreen.class).getMenu();
         menu.getTopScoreView().startTime();
-    /*    for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 11; i++) {
             stackCard.add(new ArrayList<CardCell>());
             if (i < 7) {
 
@@ -117,10 +117,10 @@ public class CellGame extends BaseGame {
             deck.remove(index);
             i--;
 
-        }*/
+        }
 
         //debugWinCards();
-        debugWinCardsRead();
+        //debugWinCardsRead();
 
 
     }
@@ -397,18 +397,19 @@ public class CellGame extends BaseGame {
                 boolean isEnd = false;
 
                 if (cardCells.size() > 0) {
-                    if (cardCells.get(cardCells.size() - 1).isDeckMode())
+                    if (cardCells.get(cardCells.size() - 1).isDrawBack()) {
                         cardCells.get(cardCells.size() - 1).openCardInDeck();
+                        return;
+                    }
                 }
 
                 for (int l = 0; l < cardCells.size(); l++) {
                     CardCell cardDeck = cardCells.get(l);
 
-                    if (!cardDeck.isDeckMode()) {
+                    if (!cardDeck.isDrawBack()) {
                         for (int k = 7; k < 11; k++) {
 
                             if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false)) {
-                                //cardDeck.setZIndex(9999);
                                 cardDeck.moveToStartPosition();
 
                                 isEnd = false;
@@ -423,11 +424,14 @@ public class CellGame extends BaseGame {
                             if (checkEmptyDeck()) {
                                 restartDeck();
                             } else {
-                                CardCell tmpCard = cardCells.get(Math.max(0, l - 1));
-                                if (tmpCard.isDeckMode()) {
-                                    tmpCard.openCardInDeck();
+                                int pr = l - 1;
+                                if(pr >=0) {
+                                    CardCell tmpCard = cardCells.get(pr);
+                                    if (tmpCard.isDeckMode()) {
+                                        tmpCard.openCardInDeck();
 
-                                    break;
+                                        break;
+                                    }
                                 }
                             }
                             break;
@@ -447,7 +451,6 @@ public class CellGame extends BaseGame {
                         ArrayList<CardCell> endCards = stackCard.get(k);
 
                         if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false)) {
-                            //cardCell.setZIndex(9999);
                             cardCell.moveToStartPosition();
 
                             break;
