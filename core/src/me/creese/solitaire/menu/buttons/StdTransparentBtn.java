@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 
+import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.screens.Loading;
 import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.util.FTextures;
@@ -42,7 +44,10 @@ public class StdTransparentBtn extends Actor {
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 switch (mode) {
                     case RESTART:
+                        BaseGame baseGame = root.getGameViewForName(GameScreen.class).getBaseGame();
 
+                        baseGame.restart();
+                        root.showGameView(GameScreen.class);
                         break;
                     case RULE:
 

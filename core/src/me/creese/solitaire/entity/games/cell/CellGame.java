@@ -13,6 +13,7 @@ import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.screens.GameScreen;
+import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.P;
 import me.creese.solitaire.util.S;
 
@@ -41,7 +42,7 @@ public class CellGame extends BaseGame {
         steps = new LinkedList<>();
 
         stackCard = new ArrayList<>();
-        createDeck();
+
 
     }
 
@@ -53,10 +54,12 @@ public class CellGame extends BaseGame {
 
         isStarted = true;
 
+        createDeck();
+
         steps.clear();
         menu = getRoot().getGameViewForName(GameScreen.class).getMenu();
         menu.getTopScoreView().startTime();
-        for (int i = 0; i < 11; i++) {
+    /*    for (int i = 0; i < 11; i++) {
             stackCard.add(new ArrayList<CardCell>());
             if (i < 7) {
 
@@ -114,10 +117,10 @@ public class CellGame extends BaseGame {
             deck.remove(index);
             i--;
 
-        }
+        }*/
 
         //debugWinCards();
-        //debugWinCardsRead();
+        debugWinCardsRead();
 
 
     }
@@ -135,7 +138,7 @@ public class CellGame extends BaseGame {
         for (int i = 0; i < split.length - 1; i++) {
             ArrayList<CardCell> cardCells = new ArrayList<>();
             stackCard.add(cardCells);
-            EmptyCard cardFirst = new EmptyCard(50 + (i * 230), 400, me.creese.solitaire.entity.CardType.DIAMONDS, 1,getRoot());
+            EmptyCard cardFirst = new EmptyCard(33 + (i * 148), 1213, CardType.DIAMONDS, 1,getRoot());
             cardFirst.setStackNum(i);
             cardFirst.posStack(0);
             stackCard.get(i).add(cardFirst);
@@ -162,7 +165,7 @@ public class CellGame extends BaseGame {
         for (int i = 7; i < 11; i++) {
             ArrayList<CardCell> cardCells = new ArrayList<>();
             stackCard.add(cardCells);
-            PlaceCard placeCard = new PlaceCard(900 + ((i - 7) * 230), 750, CardType.DIAMONDS, 1,getRoot());
+            PlaceCard placeCard = new PlaceCard(33 + ((i - 7) * 148), 1439, CardType.getForNum(i - 7), 1,getRoot());
             placeCard.setStackNum(i);
             placeCard.posStack(0);
             cardCells.add(placeCard);
@@ -175,7 +178,8 @@ public class CellGame extends BaseGame {
         ArrayList<CardCell> cardCells = new ArrayList<>();
         stackCard.add(cardCells);
 
-        addActor(new EmptyCardDeck(50, 750, me.creese.solitaire.entity.CardType.DIAMONDS, 1, 11,getRoot()));
+        emptyCardDeck = new EmptyCardDeck(922, 1439, CardType.DIAMONDS, 1, 11, getRoot());
+        addActor(emptyCardDeck);
 
 
         for (int j = 0; j < last.length; j++) {
@@ -219,6 +223,8 @@ public class CellGame extends BaseGame {
             }
         }
 
+        System.out.println(sb);
+
     }
 
     public LinkedList<StepBack> getSteps() {
@@ -227,6 +233,18 @@ public class CellGame extends BaseGame {
 
     @Override
     public void restart() {
+        for (ArrayList<CardCell> cardCells : stackCard) {
+            cardCells.clear();
+        }
+        stackCard.clear();
+        clearChildren();
+        isStarted = false;
+
+        getMenu().getTopScoreView().setTime(0);
+        getMenu().getTopScoreView().setScore(0);
+        getMenu().getTopScoreView().setStep(0);
+        start();
+
 
     }
 
@@ -390,7 +408,7 @@ public class CellGame extends BaseGame {
                         for (int k = 7; k < 11; k++) {
 
                             if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false)) {
-                                cardDeck.setZIndex(9999);
+                                //cardDeck.setZIndex(9999);
                                 cardDeck.moveToStartPosition();
 
                                 isEnd = false;
@@ -429,7 +447,7 @@ public class CellGame extends BaseGame {
                         ArrayList<CardCell> endCards = stackCard.get(k);
 
                         if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false)) {
-                            cardCell.setZIndex(9999);
+                            //cardCell.setZIndex(9999);
                             cardCell.moveToStartPosition();
 
                             break;
@@ -447,6 +465,8 @@ public class CellGame extends BaseGame {
 
             }
         }
+
+
 
     }
 
@@ -466,6 +486,23 @@ public class CellGame extends BaseGame {
         return true;
     }
 
+    /**
+     * Проверка на выигрыш
+     */
+    public void checkToWin() {
+
+        if(getActions().size > 0) return;
+
+        for (int i = 7; i < 11; i++) {
+            ArrayList<CardCell> cardCells = stackCard.get(i);
+
+
+            if(cardCells.size() < 14) return;
+        }
+
+
+        getRoot().showGameView(WinScreen.class);
+    }
     /**
      * Автоматическая сборка карт
      */
@@ -487,7 +524,10 @@ public class CellGame extends BaseGame {
             public void run() {
                 if (!checkToGameOver()) {
                     if (isCardActionsClear()) stepBuildCards();
-                } else getActions().clear();
+                } else {
+                    getActions().clear();
+                    checkToWin();
+                }
             }
         }))));
 

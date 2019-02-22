@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -86,6 +88,14 @@ public class WinScreen extends GameView {
         public NoBtn() {
             font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
             setBounds(76,59,928,174);
+            addListener(new ActorGestureListener(){
+                @Override
+                public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    getRoot().getGameViewForName(GameScreen.class).getBaseGame().restart();
+                    getRoot().showGameView(GameScreen.class);
+
+                }
+            });
         }
 
         @Override

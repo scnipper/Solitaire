@@ -111,6 +111,18 @@ public class TopScoreView extends Actor {
         this.customHeadText = customHeadText;
     }
 
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);

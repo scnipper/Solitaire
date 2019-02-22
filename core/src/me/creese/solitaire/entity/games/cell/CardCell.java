@@ -182,7 +182,7 @@ public class CardCell extends Card {
 
             if(posInStack-1 > 0) {
                 CardCell pre = tmpStack.get(posInStack - 1);
-                System.out.println(pre.isDrawBack()+" pre draw back\n"+pre);
+
                 s.drawBackPrevCards = pre.isDrawBack();
             }
 
@@ -248,6 +248,7 @@ public class CardCell extends Card {
 
             if (isCheckToAuto) parent.checkToAuto();
 
+            parent.checkToWin();
 
             return true;
         }
@@ -399,7 +400,7 @@ public class CardCell extends Card {
 
                 if(posInStack >0)
                 setDrawShadow(false);
-                else System.out.println(posInStack+" draw shadow");
+
             }
         }
     }
