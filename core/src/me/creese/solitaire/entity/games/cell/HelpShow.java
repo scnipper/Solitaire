@@ -5,6 +5,8 @@ public class HelpShow {
     private int toStack;
     private int fromPos;
 
+    private boolean justDeckHighlight;
+
     public HelpShow(int fromStack, int toStack, int fromPos) {
         this.fromStack = fromStack;
         this.toStack = toStack;
@@ -21,6 +23,14 @@ public class HelpShow {
 
     public int getFromPos() {
         return fromPos;
+    }
+
+    public boolean isJustDeckHighlight() {
+        return justDeckHighlight;
+    }
+
+    public void setJustDeckHighlight(boolean justDeckHighlight) {
+        this.justDeckHighlight = justDeckHighlight;
     }
 
     @Override

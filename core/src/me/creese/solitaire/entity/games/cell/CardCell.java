@@ -122,17 +122,20 @@ public class CardCell extends Card {
 
 
     public boolean tryMoveToPosition(int num, CardCell child) {
-        return tryMoveToPosition(num, child, true,false);
+        return tryMoveToPosition(num, child, true,false,false);
     }
 
     /**
-     * Перемещение карты на позицию
+     * Попытаться переместить карты на позицию
      *
      * @param num   Номер стека на который помещаем
      * @param child
+     * @param justCheck Простая проверка без изменения startPos
+     * @param isCheckToAuto Проверка на автосбор
+     * @param useAllStack Проверять конечные стеки карт даже если карта находится не наверху стека
      * @return
      */
-    public boolean tryMoveToPosition(int num, CardCell child, boolean isCheckToAuto,boolean justCheck) {
+    public boolean tryMoveToPosition(int num, CardCell child, boolean isCheckToAuto,boolean justCheck,boolean useAllStack) {
         final CellGame parent = (CellGame) getParent();
         ArrayList<ArrayList<CardCell>> stackCard = parent.getStackCard();
         final ArrayList<CardCell> tmpStack = stackCard.get(stackNum);
@@ -144,11 +147,14 @@ public class CardCell extends Card {
 
             final int numScoreAdd;
             if (num >= 7) {
-                // поместить на конечный стек карту можно только если она в самом конце стека
-                if (posInStack != tmpStack.size() - 1
-                        && stackNum != CellGame.CARD_DECK_NUM
-                        || !child.getCardType().equals(getCardType()))
-                    return false;
+                if(!useAllStack) {
+                    // поместить на конечный стек карту можно только если она в самом конце стека
+                    if (posInStack != tmpStack.size() - 1 && stackNum != CellGame.CARD_DECK_NUM
+                            || !child.getCardType().equals(getCardType()))
+                        return false;
+                } else {
+                    if(!child.getCardType().equals(getCardType())) return false;
+                }
 
                 numScoreAdd = 20;
                 //тени
@@ -355,7 +361,15 @@ public class CardCell extends Card {
             parent.getMenu().getTopScoreView().iterateStep();
         }
 
-        parent.makeHelp();
+        if(posInStack == deck.size()-1) {
+            parent.toGameOver(true);
+        }
+        if(indexOpen == 0) {
+            parent.makeHelp();
+
+        }
+
+
 
     }
 

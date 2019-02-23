@@ -31,18 +31,21 @@ public class CellGame extends BaseGame {
     private final ArrayList<ArrayList<CardCell>> stackCard;
     // история ходов
     private final LinkedList<StepBack> steps;
+    private final LinkedList<HelpShow> hints;
     private ArrayList<DeckItem> deck;
     private boolean lockBackStep;
     private EmptyCardDeck emptyCardDeck;
     private Menu menu;
     private boolean isStarted;
-    private HelpShow currHelp;
+    private boolean toGameOver;
 
 
     public CellGame() {
         random = new Random();
 
         steps = new LinkedList<>();
+        hints = new LinkedList<>();
+
 
         stackCard = new ArrayList<>();
 
@@ -388,7 +391,26 @@ public class CellGame extends BaseGame {
 
     @Override
     public void showHelp() {
-        if (currHelp != null) {
+        if (hints.size() > 0) {
+            HelpShow currHelp = hints.pop();
+
+            if (currHelp.isJustDeckHighlight()) {
+                emptyCardDeck.setDrawShadow(true);
+                emptyCardDeck.getShadow().setScale(1.1f);
+                emptyCardDeck.getShadow().setColor(Color.YELLOW);
+
+                addAction(Actions.sequence(Actions.delay(0.3f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        emptyCardDeck.setDrawShadow(false);
+                        emptyCardDeck.getShadow().setScale(1f);
+                        emptyCardDeck.getShadow().setColor(Color.BLACK);
+                    }
+                })));
+                if (hints.size() == 0) makeHelp();
+                return;
+            }
+
             ArrayList<CardCell> fromStack = stackCard.get(currHelp.getFromStack());
             ArrayList<CardCell> toStack = stackCard.get(currHelp.getToStack());
 
@@ -402,27 +424,28 @@ public class CellGame extends BaseGame {
                 moveCard.getShadow().setScale(1.1f);
                 tmpStartPos.set(moveCard.getStartPos());
                 Vector2 movePos = new Vector2();
-                if(toStack.size() > 1 && currHelp.getToStack() < 7)
-                movePos.set(toCard.getX(), toCard.getY() - (SPACE_BETWEEN_TWO_OPEN_CARDS*(i - currHelp.getFromPos()+1)));
+                if (toStack.size() > 1 && currHelp.getToStack() < 7)
+                    movePos.set(toCard.getX(), toCard.getY() - (SPACE_BETWEEN_TWO_OPEN_CARDS * (i - currHelp.getFromPos() + 1)));
                 else
-                movePos.set(toCard.getX(), toCard.getY()- (SPACE_BETWEEN_TWO_OPEN_CARDS*(i - currHelp.getFromPos())));
+                    movePos.set(toCard.getX(), toCard.getY() - (SPACE_BETWEEN_TWO_OPEN_CARDS * (i - currHelp.getFromPos())));
 
                 moveCard.setZIndex(99999);
-                moveCard.addAction(Actions.sequence(Actions.moveTo(movePos.x, movePos.y, 0.4f),
-                        Actions.delay(0.3f), Actions.moveTo(tmpStartPos.x, tmpStartPos.y, 0.5f),Actions.run(new Runnable() {
-                            @Override
-                            public void run() {
-                                moveCard.getShadow().setColor(Color.BLACK);
-                                moveCard.getShadow().setScale(1);
-                            }
-                        })));
+                moveCard.addAction(Actions.sequence(Actions.moveTo(movePos.x, movePos.y, 0.4f), Actions.delay(0.3f), Actions.moveTo(tmpStartPos.x, tmpStartPos.y, 0.4f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        moveCard.getShadow().setColor(Color.BLACK);
+                        moveCard.getShadow().setScale(1);
+                    }
+                })));
 
-                if(currHelp.getFromStack() == CARD_DECK_NUM) break;
+                if (currHelp.getFromStack() == CARD_DECK_NUM) break;
             }
 
 
+            if (hints.size() == 0) {
+                makeHelp();
 
-            currHelp = null;
+            }
         }
     }
 
@@ -452,7 +475,7 @@ public class CellGame extends BaseGame {
                     if (!cardDeck.isDrawBack()) {
                         for (int k = 7; k < 11; k++) {
 
-                            if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false, false)) {
+                            if (cardDeck.tryMoveToPosition(k, stackCard.get(k).get(stackCard.get(k).size() - 1), false, false, false)) {
                                 cardDeck.moveToStartPosition();
 
                                 isEnd = false;
@@ -493,7 +516,7 @@ public class CellGame extends BaseGame {
 
                         ArrayList<CardCell> endCards = stackCard.get(k);
 
-                        if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false, false)) {
+                        if (cardCell.tryMoveToPosition(k, endCards.get(endCards.size() - 1), false, false, false)) {
                             cardCell.moveToStartPosition();
 
                             break;
@@ -648,50 +671,117 @@ public class CellGame extends BaseGame {
      */
     public void makeHelp() {
 
-        for (int i = CARD_DECK_NUM; i >=0; i--) {
+
+        hints.clear();
+        for (int i = CARD_DECK_NUM; i >= 0; i--) {
             ArrayList<CardCell> cards = stackCard.get(i);
 
-            if(i < 7 || i == CARD_DECK_NUM) {
+            if (i < 7 || i == CARD_DECK_NUM) {
                 if (i == CARD_DECK_NUM) {
                     for (int j = 0; j < cards.size(); j++) {
                         CardCell card = cards.get(j);
                         if (!card.isDrawBack()) {
-                            if(helpPlaceCard(card, i, j))
-                            return;
-                            else break;
+                            helpPlaceCard(card, i, j, false);
+                            break;
                         }
+
+
                     }
                 } else {
                     for (int j = 1; j < cards.size(); j++) {
                         CardCell card = cards.get(j);
-                        if (helpPlaceCard(card, i, j)) {
-                            return;
+
+                        if (j == 1 && card.getNumberCard() == 13) continue;
+
+                        if (!card.isDrawBack()) {
+                            CardCell prevCard = cards.get(j - 1);
+                            if (j == 1 || prevCard.isDrawBack()) {
+                                helpPlaceCard(card, i, j, false);
+                            } else {
+
+                                for (int k = 0; k < stackCard.size(); k++) {
+                                    if (k != CARD_DECK_NUM || k != j) {
+                                        ArrayList<CardCell> tmp = stackCard.get(k);
+                                        if (prevCard.tryMoveToPosition(k, tmp.get(tmp.size() - 1), false, true, true)) {
+                                            CardCell tCard = cards.get(j - 2);
+                                            if (j - 2 == 0 || !tCard.isDrawBack()) {
+
+                                                helpPlaceCard(card, i, j, false);
+
+
+                                            } else {
+                                                helpPlaceCard(card, i, j, false);
+
+                                            }
+                                        } else {
+                                            if (j == cards.size() - 1) {
+                                                helpPlaceCard(card, i, j, true);
+                                            }
+                                        }
+
+                                    }
+                                }
+
+
+                            }
+
                         }
+
                     }
                 }
             }
 
+        }
+
+        if (hints.size() == 0) {
+            highlightDeck();
         }
     }
 
-    private boolean helpPlaceCard(CardCell card, int exceptStack,int fromPos) {
-        if (!card.isDrawBack()) {
-            for (int k = stackCard.size()-1; k >=0; k--) {
-                if (k != exceptStack && k != CARD_DECK_NUM) {
-                    ArrayList<CardCell> cardsSub = stackCard.get(k);
-                    if (cardsSub.size() > 0) {
-                        CardCell cardCell = cardsSub.get(cardsSub.size() - 1);
+    private void helpPlaceCard(CardCell card, int exceptStack, int fromPos, boolean onlyPlaceStack) {
 
-                        if (card.tryMoveToPosition(k, cardCell, false, true)) {
-                            currHelp = new HelpShow(exceptStack, k, fromPos);
-                            System.out.println(currHelp);
-                            return true;
-                        }
+
+        for (int k = stackCard.size() - 1; k >= 0; k--) {
+
+            if (onlyPlaceStack) {
+                if (k < 7 || k == CARD_DECK_NUM) continue;
+            }
+
+            if (k != exceptStack && k != CARD_DECK_NUM) {
+                ArrayList<CardCell> cardsSub = stackCard.get(k);
+                if (cardsSub.size() > 0) {
+                    CardCell cardCell = cardsSub.get(cardsSub.size() - 1);
+
+                    if (card.tryMoveToPosition(k, cardCell, false, true, false)) {
+                        HelpShow currHelp = new HelpShow(exceptStack, k, fromPos);
+                        System.out.println(currHelp);
+
+                        hints.addLast(currHelp);
+                        toGameOver = false;
                     }
                 }
             }
         }
-        return false;
+
+
+    }
+
+    private void gameOver() {
+        System.out.println("GAME OVER");
+    }
+
+    /**
+     * Подсветка колоды
+     */
+    private void highlightDeck() {
+        if (stackCard.get(CARD_DECK_NUM).size() > 0) {
+            HelpShow helpShow = new HelpShow(-1, -1, -1);
+            helpShow.setJustDeckHighlight(true);
+            hints.addLast(helpShow);
+
+        } else {
+            gameOver();
+        }
     }
 
     /**
@@ -813,6 +903,8 @@ public class CellGame extends BaseGame {
 
         }
 
+        if (toGameOver) gameOver();
+
 
     }
 
@@ -820,6 +912,10 @@ public class CellGame extends BaseGame {
         return emptyCardDeck;
     }
 
+
+    public void toGameOver(boolean toGameOver) {
+        this.toGameOver = toGameOver;
+    }
 
     public Menu getMenu() {
         return menu;
