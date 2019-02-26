@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 import me.creese.solitaire.entity.games.cell.CellGame;
+import me.creese.solitaire.entity.games.spider.SpiderGame;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.Theme;
 import me.creese.solitaire.screens.CoinsScreen;
@@ -51,7 +52,7 @@ public class CardsGames extends Display {
         addListGameViews(new CoinsScreen(this));
         addListGameViews(new WinScreen(this));
         addListGameViews(new ThemesScreen(this));
-        getGameViewForName(GameScreen.class).setBaseGame(new CellGame());
+        getGameViewForName(GameScreen.class).setBaseGame(new SpiderGame());
         showGameView(GameScreen.class);
     }
 

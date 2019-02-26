@@ -22,6 +22,7 @@ public class Card extends Actor {
     private final Vector2 startTouch;
     private final Vector2 startPos;
     private final Sprite textureBack;
+    protected int posInStack;
     private final Display root;
     protected Sprite texture;
     private int numberCard;
@@ -100,6 +101,13 @@ public class Card extends Actor {
         }
     }
 
+    public void posStack(int posInStack) {
+        this.posInStack = posInStack;
+    }
+
+    public int getPosInStack() {
+        return posInStack;
+    }
 
     public boolean checkBounds(Actor child) {
         return (getX() > child.getX() && getX() < child.getX() + child.getWidth() && getY() > child.getY() && getY() < child.getY() + child.getHeight()) || (getX() + getWidth() < child.getX() + child.getWidth() && getX() + getWidth() > child.getX() && getY() > child.getY() && getY() < child.getY() + child.getHeight()) || (getY() + getHeight() > child.getY() && getY() + getHeight() < child.getY() + child.getHeight() && getX() + getWidth() > child.getX() && getX() + getWidth() < child.getX() + child.getWidth()) || (getY() + getHeight() > child.getY() && getY() + getHeight() < child.getY() + child.getHeight() && getX() > child.getX() && getX() < child.getX() + child.getWidth());

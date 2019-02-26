@@ -27,7 +27,7 @@ public class CellGame extends BaseGame {
     public static final int FROM_DECK_HARD_DIFICULT = -296;
     private static final int SPACE_BETWEEN_TWO_CARDS = 24;
     private static final int SPACE_BETWEEN_TWO_OPEN_CARDS = 67;
-    private final Random random;
+
     private final ArrayList<ArrayList<CardCell>> stackCard;
     // история ходов
     private final LinkedList<StepBack> steps;
@@ -41,7 +41,7 @@ public class CellGame extends BaseGame {
 
 
     public CellGame() {
-        random = new Random();
+
 
         steps = new LinkedList<>();
         hints = new LinkedList<>();
@@ -76,7 +76,7 @@ public class CellGame extends BaseGame {
                 addActor(cardFirst);
                 for (int j = 0; j < i + 1; j++) {
 
-                    int indexDeck = random.nextInt(deck.size());
+                    int indexDeck = getRandom().nextInt(deck.size());
                     DeckItem deckItem = deck.get(indexDeck);
 
 
@@ -108,7 +108,7 @@ public class CellGame extends BaseGame {
 
         for (int i = 0; i < deck.size(); i++) {
 
-            int index = random.nextInt(deck.size());
+            int index = getRandom().nextInt(deck.size());
             DeckItem deckItem = deck.get(index);
 
             CardCell card = new CardCell(922, 1439, deckItem.getType(), deckItem.getNumber(), getRoot());

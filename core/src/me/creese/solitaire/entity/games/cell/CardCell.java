@@ -16,7 +16,7 @@ public class CardCell extends Card {
 
 
     private int stackNum;
-    private int posInStack;
+
     private boolean deckMode;
     // если карта не видна за лругими чуть приподнять ее
     private boolean isMoveUp;
@@ -374,9 +374,7 @@ public class CardCell extends Card {
     }
 
 
-    public void posStack(int posInStack) {
-        this.posInStack = posInStack;
-    }
+
 
     public int getStackNum() {
         return stackNum;
@@ -386,9 +384,7 @@ public class CardCell extends Card {
         this.stackNum = stackNum;
     }
 
-    public int getPosInStack() {
-        return posInStack;
-    }
+
 
 
     public boolean isDeckMode() {

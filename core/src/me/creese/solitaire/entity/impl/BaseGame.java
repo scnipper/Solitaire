@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import java.util.Random;
+
 import me.creese.solitaire.menu.BottomMenu;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.TopScoreView;
@@ -20,11 +22,12 @@ public abstract class BaseGame extends Group {
 
     private final Sprite logo;
     private final Shapes shapes;
+    private final Random random;
 
     private Display root;
 
     public BaseGame() {
-
+        random = new Random();
 
         logo = new Sprite(new Texture("splash/splash.png"));
         logo.setOrigin(0,0);
@@ -47,6 +50,10 @@ public abstract class BaseGame extends Group {
     public void setRoot(Display root) {
         this.root = root;
 
+    }
+
+    public Random getRandom() {
+        return random;
     }
 
     @Override
