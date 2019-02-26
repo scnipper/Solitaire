@@ -15,10 +15,9 @@ import me.creese.util.display.GameView;
 public class GameScreen extends GameView {
 
 
-    private final Stage stageScreen;
     private final Stage stageFit;
-    private final FillBlack fillBlack;
     private final Menu menu;
+    private final Stage stageBaseGame;
     private BaseGame baseGame;
 
     public GameScreen(Display root) {
@@ -27,11 +26,14 @@ public class GameScreen extends GameView {
         Stage stage = new Stage(new ScreenViewport());
         addStage(stage, 0);
 
-        stageScreen = new Stage(new ScreenViewport());
-        fillBlack = new FillBlack();
-        stageScreen.addActor(fillBlack);
+        //stageScreen = new Stage(new ScreenViewport());
+        //fillBlack = new FillBlack();
+        //stageScreen.addActor(fillBlack);
         stageFit = new Stage(new FitViewport(P.WIDTH, P.HEIGHT));
 
+        stageBaseGame = new Stage(new FitViewport(P.WIDTH, P.HEIGHT));
+
+        addStage(stageBaseGame);
         menu = new Menu(root);
         root.addTransitObject(menu);
 
@@ -42,21 +44,6 @@ public class GameScreen extends GameView {
         return menu;
     }
 
-    public void removeBlack() {
-        removeStage(stageScreen);
-    }
-
-    public FillBlack getFillBlack() {
-        return fillBlack;
-    }
-
-    public Stage getStageFit() {
-        return stageFit;
-    }
-
-    public Stage getStageScreen() {
-        return stageScreen;
-    }
 
     @Override
     public void addRoot(Display display) {
@@ -65,7 +52,7 @@ public class GameScreen extends GameView {
         if (display != null) {
             baseGame.setRoot(display);
             addActor(menu);
-            addActor(baseGame);
+            stageBaseGame.addActor(baseGame);
             baseGame.start();
         }
     }

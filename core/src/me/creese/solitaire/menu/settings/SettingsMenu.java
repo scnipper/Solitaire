@@ -49,7 +49,7 @@ public class SettingsMenu extends Group {
     private void closeMenu() {
         GameScreen gameScreen = root.getGameViewForName(GameScreen.class);
 
-        gameScreen.removeBlack();
+        //gameScreen.removeBlack();
         gameScreen.removeStage(getStage());
         remove();
         gameScreen.updateInput();
@@ -59,7 +59,7 @@ public class SettingsMenu extends Group {
         this.root = root;
     }
 
-    @Override
+   /* @Override
     protected void setParent(Group parent) {
         super.setParent(parent);
         if (parent != null) {
@@ -71,7 +71,7 @@ public class SettingsMenu extends Group {
                 }
             });
         }
-    }
+    }*/
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
