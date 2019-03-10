@@ -1,6 +1,7 @@
 package me.creese.solitaire.entity.games.spider;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
@@ -18,11 +19,13 @@ public class SpiderGame extends BaseGame {
     private final ArrayList<ArrayList<SpiderCard>> decks;
     private final ArrayList<SpiderCard> startDeck;
     private final ArrayList<AddNewCard> newCards;
+    private final Vector2 houseCardPos;
 
     public SpiderGame() {
         decks = new ArrayList<>();
         startDeck = new ArrayList<>();
         newCards = new ArrayList<>();
+        houseCardPos = new Vector2();
     }
 
     @Override
@@ -48,13 +51,12 @@ public class SpiderGame extends BaseGame {
             EmptyCardSpider cardSpider = new EmptyCardSpider(1650, getRoot());
             cardSpider.setX(21 + (i * (cardSpider.getWidth() + 21)));
 
-            cardSpider.getStartPos().set(cardSpider.getX(),cardSpider.getY());
+            cardSpider.getStartPos().set(cardSpider.getX(), cardSpider.getY());
             tmp.add(cardSpider);
             addActor(cardSpider);
             decks.add(tmp);
         }
 
-        System.out.println("begin size start deck = " + startDeck.size());
         int addDeck = 0;
         int countCard = 0;
 
@@ -153,18 +155,19 @@ public class SpiderGame extends BaseGame {
 
     /**
      * Проверка калоды карт на возможность перемещения
+     *
      * @param stackIndex
      */
     public void updateMoveCards(int stackIndex) {
         ArrayList<SpiderCard> cards = decks.get(stackIndex);
 
-        for (int i = 0; i < cards.size()-1; i++) {
+        for (int i = 0; i < cards.size() - 1; i++) {
             cards.get(i).setMove(false);
         }
 
-        for (int i = cards.size()-1; i>1; i--) {
+        for (int i = cards.size() - 1; i > 1; i--) {
             SpiderCard placeCard = cards.get(i);
-            SpiderCard toCard = cards.get(i-1);
+            SpiderCard toCard = cards.get(i - 1);
 
             if (placeCard.rightConditionCard(toCard)) {
                 toCard.setMove(true);
@@ -172,6 +175,53 @@ public class SpiderGame extends BaseGame {
                 break;
             }
 
+        }
+    }
+
+    /**
+     * Проверка на собранность колоды
+     */
+    public void checkWinCombination(int stackNum) {
+        ArrayList<SpiderCard> cards = decks.get(stackNum);
+
+        if (cards.size() >= 14) {
+
+            for (int i = 1; i < cards.size(); i++) {
+                SpiderCard findCard = cards.get(i);
+
+                if (findCard.getNumberCard() == 13 && i + 12 < cards.size()) {
+                    for (int j = i + 1; j < cards.size(); j++) {
+                        SpiderCard placeCard = cards.get(j);
+                        SpiderCard toCard = cards.get(j - 1);
+                        if (!placeCard.rightConditionCard(toCard)) {
+                            return;
+                        }
+
+                    }
+
+                    cards.get(i - 1).setDrawBack(false);
+                    cards.get(i - 1).setMove(true);
+
+                    for (int j = cards.size() - 1; j >= i; j--) {
+                        final SpiderCard moveCard = cards.get(j);
+                        moveCard.setZIndex(9999);
+                        moveCard.getStartPos().set(houseCardPos.x, houseCardPos.y);
+                        moveCard.moveToStartPos(-1, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (moveCard.getNumberCard() < 13) moveCard.remove();
+                            }
+                        });
+                        cards.remove(j);
+
+                    }
+                    findCard.setMove(false);
+                    houseCardPos.x += 50;
+
+                    System.out.println(" win  cards");
+                    return;
+                }
+            }
         }
     }
 
@@ -227,7 +277,7 @@ public class SpiderGame extends BaseGame {
                                     addNewCard.getStartPos().x -= i * 30;
                                     newCards.add(addNewCard);
                                     addActor(addNewCard);
-                                    addNewCard.moveToStartPos(500);
+                                    addNewCard.moveToStartPos(500, null);
 
                                 }
 

@@ -1,8 +1,10 @@
 package me.creese.solitaire.entity.games.spider;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 
@@ -21,18 +23,27 @@ public class SpiderCard extends Card {
     /**
      * Перемещение на начальную позицию
      * @param startIndex
+     * @param afterMove
      */
-    public void moveToStartPos(int startIndex) {
-        addAction(Actions.moveTo(getStartPos().x,getStartPos().y,0.17f+ (0.05f * (posInStack - startIndex))));
+    public void moveToStartPos(int startIndex, Runnable afterMove) {
+        if (afterMove != null) {
 
-        SpiderGame parent = (SpiderGame) getParent();
+            addAction(Actions.sequence(Actions.moveTo(getStartPos().x,getStartPos().y,0.17f+ (0.05f * (posInStack - startIndex))),
+                    Actions.run(afterMove)));
+        }else {
+            addAction(Actions.moveTo(getStartPos().x,getStartPos().y,0.17f+ (0.05f * (posInStack - startIndex))));
+        }
 
-        ArrayList<SpiderCard> deck = parent.getDecks().get(deckNum);
+        if(startIndex != -1) {
+            SpiderGame parent = (SpiderGame) getParent();
+
+            ArrayList<SpiderCard> deck = parent.getDecks().get(deckNum);
 
 
-        int next = posInStack + 1;
-        if(next < deck.size()) {
-            deck.get(next).moveToStartPos(startIndex);
+            int next = posInStack + 1;
+            if (next < deck.size()) {
+                deck.get(next).moveToStartPos(startIndex, afterMove);
+            }
         }
     }
 
@@ -50,12 +61,13 @@ public class SpiderCard extends Card {
             if (checkBounds(lastCard)) {
                 if(tryMoveToPosition(i,false)) {
                     parent.updateMoveCards(tmpDeck);
+                    parent.checkWinCombination(i);
                     return;
                 }
             }
         }
 
-        moveToStartPos(this.posInStack);
+        moveToStartPos(this.posInStack, null);
     }
 
     /**
@@ -95,7 +107,7 @@ public class SpiderCard extends Card {
             if(next < fromStack.size()) {
                 fromStack.get(next).tryMoveToPosition(toStackNum,false);
             }
-            moveToStartPos(savePosInStack);
+            moveToStartPos(savePosInStack, null);
             fromStack.remove(savePosInStack);
 
 
@@ -134,6 +146,12 @@ public class SpiderCard extends Card {
         super.pan(event, x, y, deltaX, deltaY);
 
         if(!isMove()) return;
+
+        Array<Action> actions = getActions();
+
+        for (Action action : actions) {
+            ((MoveToAction) action).finish();
+        }
 
         SpiderGame parent = (SpiderGame) getParent();
 
