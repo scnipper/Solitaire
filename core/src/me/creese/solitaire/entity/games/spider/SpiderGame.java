@@ -28,6 +28,8 @@ public class SpiderGame extends BaseGame {
     @Override
     public void start() {
 
+        int move;
+        houseCardPos.set(100, 100);
         AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
         addActor(addNewCard);
         addNewCard.posStack(0);
