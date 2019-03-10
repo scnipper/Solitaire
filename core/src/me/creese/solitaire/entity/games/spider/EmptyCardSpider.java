@@ -11,7 +11,7 @@ public class EmptyCardSpider extends SpiderCard {
         super(0, y, CardType.DIAMONDS, 1, root);
 
         texture = new Sprite(new Texture("cards/c_place.png"));
-        setNumberCard(0);
+        setNumberCard(-1);
         setDrawShadow(false);
     }
 }

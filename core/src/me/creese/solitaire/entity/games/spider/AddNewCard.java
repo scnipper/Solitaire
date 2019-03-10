@@ -21,7 +21,6 @@ public class AddNewCard extends SpiderCard {
     protected void touchDown(InputEvent event, float x, float y) {
         SpiderGame parent = (SpiderGame) getParent();
         ArrayList<AddNewCard> newCards = parent.getNewCards();
-        System.out.println(posInStack);
         if(posInStack == newCards.size()-1) {
             if (parent.addNewLineCard(posInStack)) {
                 newCards.remove(posInStack);

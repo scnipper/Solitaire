@@ -18,6 +18,10 @@ public class SpiderCard extends Card {
 
     }
 
+    /**
+     * Перемещение на начальную позицию
+     * @param startIndex
+     */
     public void moveToStartPos(int startIndex) {
         addAction(Actions.moveTo(getStartPos().x,getStartPos().y,0.17f+ (0.05f * (posInStack - startIndex))));
 
@@ -37,19 +41,30 @@ public class SpiderCard extends Card {
 
         ArrayList<ArrayList<SpiderCard>> decks = parent.getDecks();
 
-        for (int i = 0; i < decks.size(); i++) {
+        int tmpDeck = this.deckNum;
+        for (int i = 0; i < decks.size()-5; i++) {
+            ArrayList<SpiderCard> spiderCards = decks.get(i);
 
-            SpiderCard lastCard = decks.get(i).get(decks.get(i).size() - 1);
+            SpiderCard lastCard = spiderCards.get(spiderCards.size() - 1);
 
             if (checkBounds(lastCard)) {
-                if(tryMoveToPosition(i)) return;
+                if(tryMoveToPosition(i,false)) {
+                    parent.updateMoveCards(tmpDeck);
+                    return;
+                }
             }
         }
 
-        moveToStartPos(posInStack);
+        moveToStartPos(this.posInStack);
     }
 
-    private boolean tryMoveToPosition(int toStackNum) {
+    /**
+     * Попытка перемещения на позицию
+     * @param toStackNum
+     * @param justCheck
+     * @return
+     */
+    public boolean tryMoveToPosition(int toStackNum,boolean justCheck) {
         SpiderGame parent = (SpiderGame) getParent();
 
 
@@ -59,8 +74,12 @@ public class SpiderCard extends Card {
 
         ArrayList<SpiderCard> fromStack = parent.getDecks().get(deckNum);
 
-        if(toCard.getNumberCard()-1 == getNumberCard()) {
-            getStartPos().set(toCard.getStartPos().x,toCard.getStartPos().y-SpiderGame.SPACE_BETWEEN_TWO_OPEN_CARDS);
+        if(rightConditionCard(toCard)) {
+
+            if(justCheck) return true;
+
+            getStartPos().set(toCard.getStartPos().x,toCard.getStartPos().y-
+                    (toStack.size() > 1 ?SpiderGame.SPACE_BETWEEN_TWO_OPEN_CARDS:0));
 
             int savePosInStack = posInStack;
 
@@ -74,7 +93,7 @@ public class SpiderCard extends Card {
             int next = savePosInStack + 1;
 
             if(next < fromStack.size()) {
-                fromStack.get(next).tryMoveToPosition(toStackNum);
+                fromStack.get(next).tryMoveToPosition(toStackNum,false);
             }
             moveToStartPos(savePosInStack);
             fromStack.remove(savePosInStack);
@@ -85,6 +104,15 @@ public class SpiderCard extends Card {
 
         return false;
 
+    }
+
+    /**
+     * Правильное условие для перемещения карт друг на друга
+     * @param toCard
+     * @return
+     */
+    public boolean rightConditionCard(SpiderCard toCard) {
+        return toCard.getNumberCard()-1 == getNumberCard() || toCard.getNumberCard() == -1;
     }
 
     @Override

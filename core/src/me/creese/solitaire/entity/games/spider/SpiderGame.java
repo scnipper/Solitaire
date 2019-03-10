@@ -28,14 +28,14 @@ public class SpiderGame extends BaseGame {
     @Override
     public void start() {
 
-        AddNewCard addNewCard = new AddNewCard(P.WIDTH+200, 100, getRoot());
+        AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
         addActor(addNewCard);
         addNewCard.posStack(0);
         newCards.add(addNewCard);
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 13; j++) {
-                SpiderCard spiderCard = new SpiderCard(P.WIDTH+200, 100, CardType.PEAKS, j + 1, getRoot());
+                SpiderCard spiderCard = new SpiderCard(P.WIDTH + 200, 100, CardType.PEAKS, j + 1, getRoot());
                 startDeck.add(spiderCard);
             }
         }
@@ -43,14 +43,16 @@ public class SpiderGame extends BaseGame {
 
         for (int i = 0; i < 10; i++) {
             ArrayList<SpiderCard> tmp = new ArrayList<>();
-            EmptyCardSpider cardSpider = new EmptyCardSpider( 1650,getRoot());
+            EmptyCardSpider cardSpider = new EmptyCardSpider(1650, getRoot());
             cardSpider.setX(21 + (i * (cardSpider.getWidth() + 21)));
+
+            cardSpider.getStartPos().set(cardSpider.getX(),cardSpider.getY());
             tmp.add(cardSpider);
             addActor(cardSpider);
             decks.add(tmp);
         }
 
-        System.out.println("begin size start deck = "+startDeck.size());
+        System.out.println("begin size start deck = " + startDeck.size());
         int addDeck = 0;
         int countCard = 0;
 
@@ -61,23 +63,23 @@ public class SpiderGame extends BaseGame {
             int index = getRandom().nextInt(startDeck.size());
             SpiderCard card = startDeck.get(index);
 
-            if(countCard < 54) {
+            if (countCard < 54) {
                 int posInStack = decks.get(addDeck).size();
                 card.posStack(posInStack);
                 card.setDeckNum(addDeck);
                 decks.get(addDeck).add(card);
 
-                card.getStartPos().set(21+(addDeck * (card.getWidth()+21)),1650-((posInStack-1) * SPACE_BETWEEN_TWO_CARDS));
+                card.getStartPos().set(21 + (addDeck * (card.getWidth() + 21)), 1650 - ((posInStack - 1) * SPACE_BETWEEN_TWO_CARDS));
                 card.setDrawBack(true);
 
                 addDeck++;
 
                 countCard++;
-                if (addDeck == decks.size()-1) addDeck = 0;
+                if (addDeck == decks.size() - 1) addDeck = 0;
             } else {
                 tmp.add(card);
 
-                if(tmp.size() == 10) {
+                if (tmp.size() == 10) {
                     tmp = new ArrayList<>();
                     decks.add(tmp);
                 }
@@ -90,7 +92,7 @@ public class SpiderGame extends BaseGame {
         moveToPositionDeck(false);
 
 
-        decks.remove(decks.size()-1);
+        decks.remove(decks.size() - 1);
 
 
 
@@ -105,31 +107,40 @@ public class SpiderGame extends BaseGame {
     }
 
     /**
-     * Добавление новых карт
+     * Добавление дополнительных карт
+     *
      * @return
      */
     public boolean addNewLineCard(int index) {
 
         for (ArrayList<SpiderCard> deck : decks) {
-            if(deck.size() == 1) return false;
+            if (deck.size() == 1) return false;
         }
 
-        ArrayList<SpiderCard> from = decks.get(decks.size() - index-1);
+        ArrayList<SpiderCard> from = decks.get(decks.size() - index - 1);
         for (int i = 0; i < 10; i++) {
             ArrayList<SpiderCard> to = decks.get(i);
 
             SpiderCard fromCard = from.get(from.size() - 1);
             SpiderCard toCard = to.get(to.size() - 1);
 
+
+            addActor(fromCard);
+            fromCard.setVisible(false);
+
+
             fromCard.setDeckNum(i);
             fromCard.posStack(to.size());
 
             to.add(fromCard);
 
-            fromCard.setMove(true);
-            from.remove(from.size()-1);
 
-            fromCard.getStartPos().set(toCard.getStartPos().x,toCard.getStartPos().y-SPACE_BETWEEN_TWO_OPEN_CARDS);
+            fromCard.setMove(true);
+            from.remove(from.size() - 1);
+
+            fromCard.getStartPos().set(toCard.getStartPos().x, toCard.getStartPos().y - SPACE_BETWEEN_TWO_OPEN_CARDS);
+            updateMoveCards(i);
+
 
 
 
@@ -138,61 +149,92 @@ public class SpiderGame extends BaseGame {
         return true;
     }
 
+    /**
+     * Проверка калоды карт на возможность перемещения
+     * @param stackIndex
+     */
+    public void updateMoveCards(int stackIndex) {
+        ArrayList<SpiderCard> cards = decks.get(stackIndex);
+
+        for (int i = 0; i < cards.size()-1; i++) {
+            cards.get(i).setMove(false);
+        }
+
+        for (int i = cards.size()-1; i>1; i--) {
+            SpiderCard placeCard = cards.get(i);
+            SpiderCard toCard = cards.get(i-1);
+
+            if (placeCard.rightConditionCard(toCard)) {
+                toCard.setMove(true);
+            } else {
+                break;
+            }
+
+        }
+    }
+
+    /**
+     * Анимация перемещения карт на начальную позицию
+     *
+     * @param onlyLast только последняя линия
+     */
     private void moveToPositionDeck(final boolean onlyLast) {
 
 
-        addAction(Actions.repeat(-1,Actions.run(new Runnable() {
+        addAction(Actions.repeat(-1, Actions.run(new Runnable() {
             int deckNum = 0;
-            int cardNum = onlyLast ? decks.get(deckNum).size()-1: 1;
+            int cardNum = onlyLast ? decks.get(deckNum).size() - 1 : 1;
 
             SpiderCard startCard = decks.get(deckNum).get(cardNum);
+
             @Override
             public void run() {
-                if(startCard.getActions().size == 0) {
+                if (startCard.getActions().size == 0) {
                     addActor(startCard);
-                    startCard.addAction(Actions.sequence(Actions.moveTo(startCard.getStartPos().x,startCard.getStartPos().y,0.05f),
-                            Actions.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    deckNum++;
+
+                    startCard.setVisible(true);
+                    startCard.addAction(Actions.sequence(Actions.moveTo(startCard.getStartPos().x, startCard.getStartPos().y, 0.05f), Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            deckNum++;
 
 
-                                    if(deckNum == 10) {
-                                        deckNum = 0;
-                                        cardNum++;
-                                    }
-                                    if(onlyLast) {
-                                        cardNum = decks.get(deckNum).size() - 1;
-                                        if(deckNum == 0) getActions().clear();
-                                    }
+                            if (deckNum == 10) {
+                                deckNum = 0;
+                                cardNum++;
+                            }
+                            if (onlyLast) {
+                                cardNum = decks.get(deckNum).size() - 1;
+                                if (deckNum == 0) getActions().clear();
+                            }
 
-                                    if(cardNum == decks.get(deckNum).size() && !onlyLast) {
-                                        getActions().clear();
+                            if (cardNum == decks.get(deckNum).size() && !onlyLast) {
+                                getActions().clear();
 
-                                        for (int i = 0; i < 10; i++) {
-                                            ArrayList<SpiderCard> deck = decks.get(i);
-                                            deck.get(deck.size()-1).setDrawBack(false);
-                                            deck.get(deck.size()-1).setMove(true);
-                                        }
+                                for (int i = 0; i < 10; i++) {
+                                    ArrayList<SpiderCard> deck = decks.get(i);
+                                    deck.get(deck.size() - 1).setDrawBack(false);
+                                    deck.get(deck.size() - 1).setMove(true);
+                                }
 
 
-                                            for (int i = 1; i < 5; i++) {
-                                                AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
-                                                addNewCard.setZIndex(0);
-                                                addNewCard.posStack(i);
-                                                addNewCard.getStartPos().x -= i * 30;
-                                                newCards.add(addNewCard);
-                                                addActor(addNewCard);
-                                                addNewCard.moveToStartPos(500);
-
-                                            }
-
-                                        return;
-                                    }
-                                    startCard = decks.get(deckNum).get(cardNum);
+                                for (int i = 1; i < 5; i++) {
+                                    AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
+                                    addNewCard.setZIndex(0);
+                                    addNewCard.posStack(i);
+                                    addNewCard.getStartPos().x -= i * 30;
+                                    newCards.add(addNewCard);
+                                    addActor(addNewCard);
+                                    addNewCard.moveToStartPos(500);
 
                                 }
-                            })));
+
+                                return;
+                            }
+                            startCard = decks.get(deckNum).get(cardNum);
+
+                        }
+                    })));
                 }
             }
         })));
@@ -219,8 +261,8 @@ public class SpiderGame extends BaseGame {
     protected void setStage(Stage stage) {
         super.setStage(stage);
         if (stage != null) {
-            stage.getViewport().setWorldWidth(P.WIDTH+400);
-            stage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+            stage.getViewport().setWorldWidth(P.WIDTH + 400);
+            stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
         }
     }
