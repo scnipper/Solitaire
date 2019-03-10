@@ -62,11 +62,6 @@ public class CardsGames extends Display {
 
     }
 
-    @Override
-    public void render() {
-
-        super.render();
-    }
 
     @Override
     public void pause() {

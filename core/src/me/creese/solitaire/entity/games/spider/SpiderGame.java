@@ -36,6 +36,7 @@ public class SpiderGame extends BaseGame {
         AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
         addActor(addNewCard);
         addNewCard.posStack(0);
+        newCards.clear();
         newCards.add(addNewCard);
 
         for (int i = 0; i < 8; i++) {
@@ -144,8 +145,6 @@ public class SpiderGame extends BaseGame {
 
             fromCard.getStartPos().set(toCard.getStartPos().x, toCard.getStartPos().y - SPACE_BETWEEN_TWO_OPEN_CARDS);
             updateMoveCards(i);
-
-
 
 
         }

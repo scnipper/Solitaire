@@ -1,12 +1,10 @@
 package me.creese.solitaire.entity.games.spider;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 import java.util.ArrayList;
 
 import me.creese.solitaire.entity.CardType;
-import me.creese.solitaire.entity.impl.Card;
 import me.creese.util.display.Display;
 
 public class AddNewCard extends SpiderCard {
@@ -21,8 +19,11 @@ public class AddNewCard extends SpiderCard {
     protected void touchDown(InputEvent event, float x, float y) {
         SpiderGame parent = (SpiderGame) getParent();
         ArrayList<AddNewCard> newCards = parent.getNewCards();
-        if(posInStack == newCards.size()-1) {
+        System.out.println("add new cards ok");
+        if (posInStack == newCards.size() - 1) {
+
             if (parent.addNewLineCard(posInStack)) {
+
                 newCards.remove(posInStack);
                 remove();
             }
@@ -32,6 +33,6 @@ public class AddNewCard extends SpiderCard {
 
     @Override
     protected void touchUp(InputEvent event, float x, float y) {
-
+        // none
     }
 }

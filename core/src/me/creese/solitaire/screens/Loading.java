@@ -174,9 +174,10 @@ public class Loading extends GameView {
 
         private final Sprite splash;
         private final CardsGames root;
+            private final Color clearColor;
 
 
-        private boolean drawBar;
+            private boolean drawBar;
 
         LogoDraw(CardsGames root) {
             this.root = root;
@@ -186,11 +187,13 @@ public class Loading extends GameView {
 
             SequenceAction sequence = new SequenceAction();
             sequence.addAction(Actions.delay(0.3f));
+            clearColor = P.TOP_MENU_COLOR.cpy();
+            clearColor.a = 0;
             sequence.addAction(Actions.color(P.TOP_MENU_COLOR, 0.5f));
 
             addAction(sequence);
 
-            setColor(Color.CLEAR);
+            setColor(clearColor);
             //splash.setColor(getColor());
             splash.setPosition(P.WIDTH / 2 - (splash.getWidth() / 2), P.HEIGHT / 2 - (splash.getHeight() / 2));
             ///splash.setColor(P.TOP_MENU_COLOR);
@@ -209,7 +212,7 @@ public class Loading extends GameView {
                 if (P.get().asset.update() && prep.isLoad()) {
 
                     if (getActions().size == 0 && !drawBar) {
-                        addAction(Actions.color(Color.CLEAR, 1));
+                        addAction(Actions.color(clearColor, 1));
                         drawBar = true;
 
                     }
