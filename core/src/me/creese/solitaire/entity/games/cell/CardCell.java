@@ -20,7 +20,7 @@ public class CardCell extends Card {
     private boolean deckMode;
     // если карта не видна за лругими чуть приподнять ее
     private boolean isMoveUp;
-    private boolean movingCard;
+
     // если true недоступная карта из трех
     private boolean isSubCard;
     private int offsetX;

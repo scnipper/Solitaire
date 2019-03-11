@@ -199,37 +199,40 @@ public class SpiderGame extends BaseGame {
                 SpiderCard findCard = cards.get(i);
 
                 if (findCard.getNumberCard() == 13 && i + 12 < cards.size()) {
+                    boolean conditionOk = true;
                     for (int j = i + 1; j < cards.size(); j++) {
                         SpiderCard placeCard = cards.get(j);
                         SpiderCard toCard = cards.get(j - 1);
                         if (!placeCard.rightConditionCard(toCard)) {
-                            return;
+                            conditionOk = false;
+                            break;
                         }
 
                     }
 
-                    cards.get(i - 1).setDrawBack(false);
-                    cards.get(i - 1).setMove(true);
+                    if(conditionOk) {
+                        cards.get(i - 1).setDrawBack(false);
+                        cards.get(i - 1).setMove(true);
 
-                    for (int j = cards.size() - 1; j >= i; j--) {
-                        final SpiderCard moveCard = cards.get(j);
-                        moveCard.setZIndex(9999);
-                        moveCard.getStartPos().set(houseCardPos.x, houseCardPos.y);
-                        moveCard.moveToStartPos(-1, new Runnable() {
-                            @Override
-                            public void run() {
-                                if (moveCard.getNumberCard() < 13) moveCard.remove();
-                            }
-                        });
-                        cards.remove(j);
+                        for (int j = cards.size() - 1; j >= i; j--) {
+                            final SpiderCard moveCard = cards.get(j);
+                            moveCard.setZIndex(9999);
+                            moveCard.getStartPos().set(houseCardPos.x, houseCardPos.y);
+                            moveCard.moveToStartPos(-1, new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (moveCard.getNumberCard() < 13) moveCard.remove();
+                                }
+                            });
+                            cards.remove(j);
 
+                        }
+                        findCard.setMove(false);
+                        houseCardPos.x += 50;
+
+                        getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(100);
+                        System.out.println(" win  cards");
                     }
-                    findCard.setMove(false);
-                    houseCardPos.x += 50;
-
-                    getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(100);
-                    System.out.println(" win  cards");
-                    return;
                 }
             }
         }

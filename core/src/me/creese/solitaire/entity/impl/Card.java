@@ -31,6 +31,7 @@ public class Card extends Actor {
     private boolean lock;
     private boolean isDrawShadow;
     private Sprite shadow;
+    protected boolean movingCard;
 
     public Card(float x, float y, CardType cardType, int numberCard, Display root) {
         this.root = root;

@@ -1,6 +1,7 @@
 package me.creese.solitaire.entity.games.spider;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
@@ -49,6 +50,7 @@ public class SpiderCard extends Card {
     }
 
     private void checkPosition() {
+        System.out.println("check position");
         SpiderGame parent = (SpiderGame) getParent();
 
         ArrayList<ArrayList<SpiderCard>> decks = parent.getDecks();
@@ -61,16 +63,21 @@ public class SpiderCard extends Card {
 
             if (checkBounds(lastCard)) {
                 if(tryMoveToPosition(i,false)) {
-                    parent.updateMoveCards(tmpDeck);
-                    parent.checkWinCombination(i);
-                    parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
-                    parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(25);
+                    afterMove(i,tmpDeck);
                     return;
                 }
             }
         }
 
         moveToStartPos(this.posInStack, null);
+    }
+
+    private void afterMove(int i, int tmpDeck) {
+        SpiderGame parent = (SpiderGame) getParent();
+        parent.updateMoveCards(tmpDeck);
+        parent.checkWinCombination(i);
+        parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
+        parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(25);
     }
 
     /**
@@ -150,6 +157,7 @@ public class SpiderCard extends Card {
 
         if(!isMove()) return;
 
+        movingCard = true;
         Array<Action> actions = getActions();
 
         for (Action action : actions) {
@@ -169,9 +177,47 @@ public class SpiderCard extends Card {
     @Override
     protected void touchUp(InputEvent event, float x, float y) {
 
+        if(movingCard)
+        checkPosition();
+
+        movingCard = false;
         super.touchUp(event, x, y);
 
-        checkPosition();
+    }
+
+    @Override
+    public void doubleClick() {
+
+        if(!isMove() && getActions().size == 0) return;
+
+        SpiderGame parent = (SpiderGame) getParent();
+
+        ArrayList<ArrayList<SpiderCard>> decks = parent.getDecks();
+
+        int saveEmptyNum = -1;
+        int tmpDeck = this.deckNum;
+        for (int i = 0; i < decks.size()-5; i++) {
+            if(i == deckNum) continue;
+
+            if(decks.get(i).size() == 1) {
+                saveEmptyNum = i;
+                continue;
+            }
+
+
+
+
+            if (tryMoveToPosition(i,false)) {
+                afterMove(i,tmpDeck);
+                return;
+            }
+        }
+        if(saveEmptyNum != -1) {
+            if (tryMoveToPosition(saveEmptyNum, false)) {
+                afterMove(saveEmptyNum, tmpDeck);
+            }
+        }
+
     }
 
     public void setDeckNum(int addDeck) {
