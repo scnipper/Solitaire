@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import java.util.ArrayList;
 
 import me.creese.solitaire.entity.CardType;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.util.display.Display;
 
 public class AddNewCard extends SpiderCard {
@@ -24,6 +25,7 @@ public class AddNewCard extends SpiderCard {
 
             if (parent.addNewLineCard(posInStack)) {
 
+                parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
                 newCards.remove(posInStack);
                 remove();
             }

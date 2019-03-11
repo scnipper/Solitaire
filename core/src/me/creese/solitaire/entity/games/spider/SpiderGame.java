@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.menu.TopScoreView;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.util.P;
 
 public class SpiderGame extends BaseGame {
@@ -20,6 +22,7 @@ public class SpiderGame extends BaseGame {
     private final ArrayList<SpiderCard> startDeck;
     private final ArrayList<AddNewCard> newCards;
     private final Vector2 houseCardPos;
+    private boolean isStart;
 
     public SpiderGame() {
         decks = new ArrayList<>();
@@ -31,7 +34,14 @@ public class SpiderGame extends BaseGame {
     @Override
     public void start() {
 
-        int move;
+        if(isStart) return;
+
+        TopScoreView topScoreView = getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView();
+        topScoreView.startTime();
+        topScoreView.setStep(0);
+        topScoreView.setScore(0);
+
+        isStart = true;
         houseCardPos.set(100, 100);
         AddNewCard addNewCard = new AddNewCard(P.WIDTH + 200, 100, getRoot());
         addActor(addNewCard);
@@ -153,7 +163,7 @@ public class SpiderGame extends BaseGame {
     }
 
     /**
-     * Проверка калоды карт на возможность перемещения
+     * Проверка колоды карт на возможность перемещения
      *
      * @param stackIndex
      */
@@ -217,6 +227,7 @@ public class SpiderGame extends BaseGame {
                     findCard.setMove(false);
                     houseCardPos.x += 50;
 
+                    getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(100);
                     System.out.println(" win  cards");
                     return;
                 }
@@ -293,6 +304,8 @@ public class SpiderGame extends BaseGame {
 
     @Override
     public void restart() {
+
+        isStart = false;
         decks.clear();
         startDeck.clear();
         clear();

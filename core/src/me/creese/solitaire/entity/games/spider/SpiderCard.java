@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.Card;
+import me.creese.solitaire.screens.GameScreen;
 import me.creese.util.display.Display;
 
 public class SpiderCard extends Card {
@@ -62,6 +63,8 @@ public class SpiderCard extends Card {
                 if(tryMoveToPosition(i,false)) {
                     parent.updateMoveCards(tmpDeck);
                     parent.checkWinCombination(i);
+                    parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
+                    parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(25);
                     return;
                 }
             }
