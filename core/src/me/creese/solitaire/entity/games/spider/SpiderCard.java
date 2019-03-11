@@ -75,6 +75,7 @@ public class SpiderCard extends Card {
     private void afterMove(int i, int tmpDeck) {
         SpiderGame parent = (SpiderGame) getParent();
         parent.updateMoveCards(tmpDeck);
+        parent.updateMoveCards(i);
         parent.checkWinCombination(i);
         parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
         parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(25);
@@ -96,7 +97,7 @@ public class SpiderCard extends Card {
 
         ArrayList<SpiderCard> fromStack = parent.getDecks().get(deckNum);
 
-        if(rightConditionCard(toCard)) {
+        if(toCard.getNumberCard()-1 == getNumberCard() || toCard.getNumberCard() == -1) {
 
             if(justCheck) return true;
 
@@ -134,7 +135,8 @@ public class SpiderCard extends Card {
      * @return
      */
     public boolean rightConditionCard(SpiderCard toCard) {
-        return toCard.getNumberCard()-1 == getNumberCard() || toCard.getNumberCard() == -1;
+        return (toCard.getNumberCard()-1 == getNumberCard() || toCard.getNumberCard() == -1)
+                && getCardType().equals(toCard.getCardType());
     }
 
     @Override

@@ -29,7 +29,7 @@ public class TopScoreView extends Actor {
     private final static String STEPS = "Ходы";
     private final static String SCORE = "Счёт";
     private final static String HARD = "Сложный";
-    private final static String EASEY = "Легкий";
+    private final static String EASY = "Легкий";
     private boolean isTimeStart;
     private float time;
     private int step;
@@ -161,7 +161,7 @@ public class TopScoreView extends Actor {
         if (customHeadText != null) {
             fontBold.draw(batch,customHeadText,0,P.HEIGHT-193,P.WIDTH,Align.center,false);
         } else
-        fontBold.draw(batch,P.get().pref.getBoolean(S.DIF_CELL) ? HARD : EASEY,0,P.HEIGHT-193,P.WIDTH,Align.center,false);
+        fontBold.draw(batch,P.get().pref.getBoolean(S.DIF_CELL) ? HARD : EASY,0,P.HEIGHT-193,P.WIDTH,Align.center,false);
         fontBold.setColor(Color.WHITE);
         fontBold.getData().setScale(1);
 

@@ -18,6 +18,10 @@ public class SpiderGame extends BaseGame {
     public static final int SPACE_BETWEEN_TWO_CARDS = 24;
     public static final int SPACE_BETWEEN_TWO_OPEN_CARDS = 67;
 
+    private static final int EASY_DIF = 300;
+    private static final int MEDIUM_DIF = 302;
+    private static final int HARD_DIF = 304;
+
     private final ArrayList<ArrayList<SpiderCard>> decks;
     private final ArrayList<SpiderCard> startDeck;
     private final ArrayList<AddNewCard> newCards;
@@ -34,7 +38,7 @@ public class SpiderGame extends BaseGame {
     @Override
     public void start() {
 
-        if(isStart) return;
+        if (isStart) return;
 
         TopScoreView topScoreView = getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView();
         topScoreView.startTime();
@@ -49,11 +53,44 @@ public class SpiderGame extends BaseGame {
         newCards.clear();
         newCards.add(addNewCard);
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 13; j++) {
-                SpiderCard spiderCard = new SpiderCard(P.WIDTH + 200, 100, CardType.PEAKS, j + 1, getRoot());
-                startDeck.add(spiderCard);
-            }
+        //int dif = P.get().pref.getInteger(S.DIF_SPIDER,EASY_DIF);
+        int dif = MEDIUM_DIF;
+
+        switch (dif) {
+            case EASY_DIF:
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 13; j++) {
+                        SpiderCard spiderCard = new SpiderCard(P.WIDTH + 200, 100, CardType.PEAKS, j + 1, getRoot());
+                        startDeck.add(spiderCard);
+                    }
+                }
+                break;
+            case MEDIUM_DIF:
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 13; j++) {
+                        SpiderCard spiderCard = new SpiderCard(P.WIDTH + 200, 100, CardType.PEAKS, j + 1, getRoot());
+                        startDeck.add(spiderCard);
+                        SpiderCard spiderCard2 = new SpiderCard(P.WIDTH + 200, 100, CardType.HEARTS, j + 1, getRoot());
+                        startDeck.add(spiderCard2);
+                    }
+
+                }
+                break;
+            case HARD_DIF:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 13; j++) {
+                        SpiderCard spiderCard = new SpiderCard(P.WIDTH + 200, 100, CardType.PEAKS, j + 1, getRoot());
+                        startDeck.add(spiderCard);
+                        SpiderCard spiderCard2 = new SpiderCard(P.WIDTH + 200, 100, CardType.HEARTS, j + 1, getRoot());
+                        startDeck.add(spiderCard2);
+                        SpiderCard spiderCard3 = new SpiderCard(P.WIDTH + 200, 100, CardType.DIAMONDS, j + 1, getRoot());
+                        startDeck.add(spiderCard3);
+                        SpiderCard spiderCard4 = new SpiderCard(P.WIDTH + 200, 100, CardType.CLUBS, j + 1, getRoot());
+                        startDeck.add(spiderCard4);
+                    }
+
+                }
+                break;
         }
 
 
@@ -210,7 +247,7 @@ public class SpiderGame extends BaseGame {
 
                     }
 
-                    if(conditionOk) {
+                    if (conditionOk) {
                         cards.get(i - 1).setDrawBack(false);
                         cards.get(i - 1).setMove(true);
 
