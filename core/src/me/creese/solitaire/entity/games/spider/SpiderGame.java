@@ -6,9 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import me.creese.solitaire.entity.CardType;
+import me.creese.solitaire.entity.games.cell.CardCell;
 import me.creese.solitaire.entity.impl.BaseGame;
+import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.TopScoreView;
 import me.creese.solitaire.screens.GameScreen;
 import me.creese.solitaire.util.P;
@@ -26,6 +29,7 @@ public class SpiderGame extends BaseGame {
     private final ArrayList<SpiderCard> startDeck;
     private final ArrayList<AddNewCard> newCards;
     private final Vector2 houseCardPos;
+    private final LinkedList<StepBackSpider> steps;
     private boolean isStart;
 
     public SpiderGame() {
@@ -33,6 +37,7 @@ public class SpiderGame extends BaseGame {
         startDeck = new ArrayList<>();
         newCards = new ArrayList<>();
         houseCardPos = new Vector2();
+        steps = new LinkedList<>();
     }
 
     @Override
@@ -54,7 +59,7 @@ public class SpiderGame extends BaseGame {
         newCards.add(addNewCard);
 
         //int dif = P.get().pref.getInteger(S.DIF_SPIDER,EASY_DIF);
-        int dif = MEDIUM_DIF;
+        int dif = EASY_DIF;
 
         switch (dif) {
             case EASY_DIF:
@@ -150,14 +155,17 @@ public class SpiderGame extends BaseGame {
 
 
 
-        /*System.out.println("size start deck = "+startDeck.size());
 
-        for (int i = 0; i < decks.size(); i++) {
-            System.out.println("size deck "+i+" "+decks.get(i).size());
-        }*/
 
     }
 
+    public void printStack() {
+        System.out.println("size start deck = "+startDeck.size());
+
+        for (int i = 0; i < decks.size(); i++) {
+            System.out.println("size deck "+i+" "+decks.get(i).size());
+        }
+    }
     /**
      * Добавление дополнительных карт
      *
@@ -341,6 +349,21 @@ public class SpiderGame extends BaseGame {
             }
         })));
     }
+    /**
+     * Метод возвращает true если все actions с карт удалены
+     *
+     * @return
+     */
+    public boolean isCardActionsClear() {
+
+        for (ArrayList<SpiderCard> cardCells : decks) {
+            for (SpiderCard cardCell : cardCells) {
+                if (cardCell.getActions().size > 0) return false;
+            }
+        }
+
+        return true;
+    }
 
     @Override
     public void restart() {
@@ -353,7 +376,63 @@ public class SpiderGame extends BaseGame {
 
     @Override
     public void cancelStep() {
+        if(steps.size() > 0 && isCardActionsClear()) {
+            StepBackSpider backSpider = steps.pop();
+            getRoot().getTransitObject(Menu.class).getTopScoreView().decrementStep();
 
+            if(backSpider.addNewLine) {
+                for (int i = 0; i < decks.size()-5; i++) {
+                    ArrayList<SpiderCard> deck = decks.get(i);
+                    int lastIndex = deck.size() - 1;
+                    final SpiderCard lastCard = deck.get(lastIndex);
+
+
+                    lastCard.getStartPos().set((P.WIDTH + 200) - newCards.size()*30,100);
+
+                    deck.remove(lastIndex);
+                    decks.get((4-backSpider.toStack)+10).add(0,lastCard);
+                    if(deck.size() > 1) {
+                        SpiderCard spiderCard = deck.get(deck.size() - 1);
+                        if(!spiderCard.isDrawBack()) spiderCard.setMove(true);
+                    }
+
+                    lastCard.moveToStartPos(-1, new Runnable() {
+                        @Override
+                        public void run() {
+                            lastCard.remove();
+
+                        }
+                    });
+                }
+
+                final AddNewCard newCard = new AddNewCard((P.WIDTH + 200) - newCards.size()*30,100, getRoot());
+
+                newCard.posStack(newCards.size());
+                newCards.add(newCard);
+                addActor(newCard);
+
+                printStack();
+                return;
+            }
+
+
+
+
+            ArrayList<SpiderCard> fromStack = decks.get(backSpider.fromStack);
+            ArrayList<SpiderCard> toStack = decks.get(backSpider.toStack);
+
+
+            SpiderCard toCard = toStack.get(toStack.size() - 1);
+            toCard.setMove(false);
+
+            SpiderCard card = fromStack.get(backSpider.fromPos);
+
+            toCard.setMove(backSpider.moveLast);
+            toCard.setDrawBack(backSpider.drawBackLast);
+
+            card.tryMoveToPosition(backSpider.toStack,false,true);
+
+        }
     }
 
     @Override
@@ -371,6 +450,9 @@ public class SpiderGame extends BaseGame {
         }
     }
 
+    public LinkedList<StepBackSpider> getSteps() {
+        return steps;
+    }
 
     public ArrayList<ArrayList<SpiderCard>> getDecks() {
         return decks;

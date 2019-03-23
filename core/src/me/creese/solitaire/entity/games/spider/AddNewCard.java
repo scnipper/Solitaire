@@ -20,13 +20,19 @@ public class AddNewCard extends SpiderCard {
     protected void touchDown(InputEvent event, float x, float y) {
         SpiderGame parent = (SpiderGame) getParent();
         ArrayList<AddNewCard> newCards = parent.getNewCards();
-        System.out.println("add new cards ok");
         if (posInStack == newCards.size() - 1) {
 
-            if (parent.addNewLineCard(posInStack)) {
+            int tmpPos = this.posInStack;
+            if (parent.addNewLineCard(this.posInStack)) {
+
+                StepBackSpider backSpider = new StepBackSpider(0, tmpPos, 0);
+
+                backSpider.addNewLine = true;
+
+                parent.getSteps().push(backSpider);
 
                 parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
-                newCards.remove(posInStack);
+                newCards.remove(this.posInStack);
                 remove();
             }
         }
