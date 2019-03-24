@@ -10,6 +10,10 @@ public class StepBackSpider {
     public boolean moveLast;
     public boolean drawBackLast;
     public boolean addNewLine;
+    public boolean fromHouse;
+    public boolean noDecrementStep;
+
+
 
     public StepBackSpider(int fromStack, int toStack, int fromPos) {
         this.fromStack = fromStack;

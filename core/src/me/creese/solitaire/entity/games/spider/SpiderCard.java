@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import me.creese.solitaire.entity.CardType;
 import me.creese.solitaire.entity.impl.Card;
@@ -15,6 +16,8 @@ import me.creese.util.display.Display;
 
 public class SpiderCard extends Card {
     private int deckNum;
+    private boolean moveLast;
+    private boolean drawBackLast;
 
     public SpiderCard(float x, float y, CardType cardType, int numberCard, Display root) {
         super(x, y, cardType, numberCard, root);
@@ -54,32 +57,31 @@ public class SpiderCard extends Card {
 
         ArrayList<ArrayList<SpiderCard>> decks = parent.getDecks();
 
-        ArrayList<SpiderCard> currDeck = decks.get(deckNum);
+
         int tmpDeck = this.deckNum;
+
         for (int i = 0; i < decks.size() - 5; i++) {
             ArrayList<SpiderCard> spiderCards = decks.get(i);
 
             SpiderCard lastCard = spiderCards.get(spiderCards.size() - 1);
 
             if (checkBounds(lastCard)) {
+
+                ArrayList<SpiderCard> currDeck = decks.get(tmpDeck);
                 boolean moveLast = true;
                 boolean drawBackLast = false;
 
-                if(posInStack > 1) {
+                if (posInStack > 1) {
                     SpiderCard prevCard = currDeck.get(posInStack - 1);
                     moveLast = prevCard.isMove();
                     drawBackLast = prevCard.isDrawBack();
                 }
 
 
-
                 if (tryMoveToPosition(i, false, false)) {
-                    afterMove(i, tmpDeck);
+                    afterMove(i, tmpDeck, moveLast, drawBackLast);
 
-                    StepBackSpider stepBackSpider = new StepBackSpider(i, tmpDeck, posInStack);
-                    stepBackSpider.moveLast = moveLast;
-                    stepBackSpider.drawBackLast = drawBackLast;
-                    parent.getSteps().push(stepBackSpider);
+
                     return;
                 }
             }
@@ -88,13 +90,29 @@ public class SpiderCard extends Card {
         moveToStartPos(this.posInStack, null);
     }
 
-    private void afterMove(int i, int tmpDeck) {
+    private void afterMove(int toStack, int tmpDeck, boolean moveLast, boolean drawBackLast) {
+
+
         SpiderGame parent = (SpiderGame) getParent();
         parent.updateMoveCards(tmpDeck);
-        parent.updateMoveCards(i);
-        parent.checkWinCombination(i);
+        parent.updateMoveCards(toStack);
+        StepBackSpider winCombination = parent.checkWinCombination(toStack);
         parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().iterateStep();
         parent.getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(25);
+
+
+        StepBackSpider stepBackSpider = new StepBackSpider(toStack, tmpDeck, posInStack);
+        stepBackSpider.moveLast = moveLast;
+        stepBackSpider.drawBackLast = drawBackLast;
+        LinkedList<StepBackSpider> steps = parent.getSteps();
+
+        if (winCombination != null) {
+            stepBackSpider.noDecrementStep = true;
+            steps.push(stepBackSpider);
+            steps.push(winCombination);
+
+        } else steps.push(stepBackSpider);
+
     }
 
     /**
@@ -104,7 +122,7 @@ public class SpiderCard extends Card {
      * @param justCheck
      * @return
      */
-    public boolean tryMoveToPosition(int toStackNum, boolean justCheck, boolean withoutConsider) {
+    public boolean tryMoveToPosition(int toStackNum, boolean justCheck, boolean withoutCondition) {
         SpiderGame parent = (SpiderGame) getParent();
 
 
@@ -114,14 +132,14 @@ public class SpiderCard extends Card {
 
         ArrayList<SpiderCard> fromStack = parent.getDecks().get(deckNum);
 
-        if (toCard.getNumberCard() - 1 == getNumberCard() || toCard.getNumberCard() == -1 || withoutConsider) {
+        if (toCard.getNumberCard() - 1 == getNumberCard() || toCard.getNumberCard() == -1 || withoutCondition) {
 
             if (justCheck) return true;
 
             int offsetY = 0;
 
-            if(toStack.size() > 1) {
-                if(toCard.isDrawBack()) {
+            if (toStack.size() > 1) {
+                if (toCard.isDrawBack()) {
                     offsetY = SpiderGame.SPACE_BETWEEN_TWO_CARDS;
                 } else {
                     offsetY = SpiderGame.SPACE_BETWEEN_TWO_OPEN_CARDS;
@@ -142,7 +160,7 @@ public class SpiderCard extends Card {
             int next = savePosInStack + 1;
 
             if (next < fromStack.size()) {
-                fromStack.get(next).tryMoveToPosition(toStackNum, false, withoutConsider);
+                fromStack.get(next).tryMoveToPosition(toStackNum, false, withoutCondition);
             }
             moveToStartPos(savePosInStack, null);
             fromStack.remove(savePosInStack);
@@ -217,12 +235,23 @@ public class SpiderCard extends Card {
 
         if (!isMove() && getActions().size == 0) return;
 
-        SpiderGame parent = (SpiderGame) getParent();
+        final SpiderGame parent = (SpiderGame) getParent();
 
         ArrayList<ArrayList<SpiderCard>> decks = parent.getDecks();
 
         int saveEmptyNum = -1;
-        int tmpDeck = this.deckNum;
+        final int tmpDeck = this.deckNum;
+
+        final ArrayList<SpiderCard> currDeck = decks.get(deckNum);
+        moveLast = true;
+        drawBackLast = false;
+
+        if (posInStack > 1) {
+            SpiderCard prevCard = currDeck.get(posInStack - 1);
+            moveLast = prevCard.isMove();
+            drawBackLast = prevCard.isDrawBack();
+        }
+
         for (int i = 0; i < decks.size() - 5; i++) {
             if (i == deckNum) continue;
 
@@ -233,13 +262,34 @@ public class SpiderCard extends Card {
 
 
             if (tryMoveToPosition(i, false, false)) {
-                afterMove(i, tmpDeck);
+                final int finalI = i;
+                parent.addAction(Actions.forever(Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(parent.isCardActionsClear()) {
+                            afterMove(finalI, tmpDeck, moveLast, drawBackLast);
+                            parent.getActions().clear();
+                        }
+                    }
+                })));
+
                 return;
             }
         }
         if (saveEmptyNum != -1) {
             if (tryMoveToPosition(saveEmptyNum, false, false)) {
-                afterMove(saveEmptyNum, tmpDeck);
+
+                final int finalSaveEmptyNum = saveEmptyNum;
+                parent.addAction(Actions.forever(Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(parent.isCardActionsClear()) {
+                            afterMove(finalSaveEmptyNum, tmpDeck, moveLast, drawBackLast);
+                            parent.getActions().clear();
+                        }
+                    }
+                })));
+
             }
         }
 

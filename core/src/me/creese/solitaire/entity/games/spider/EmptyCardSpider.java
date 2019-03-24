@@ -12,6 +12,7 @@ public class EmptyCardSpider extends SpiderCard {
 
         texture = new Sprite(new Texture("cards/c_place.png"));
         setNumberCard(-1);
+        setMove(false);
         setDrawShadow(false);
     }
 }
