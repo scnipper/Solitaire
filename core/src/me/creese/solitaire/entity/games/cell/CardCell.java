@@ -465,11 +465,11 @@ public class CardCell extends Card {
                 ((CellGame) getParent()).clearDeckFromSub(false);
             }
             openCardInDeck();
-        } else if (movingCard) {
+        } else if (panCard) {
             checkPosition();
         }
 
-        movingCard = false;
+        panCard = false;
         super.touchUp(event, x, y);
 
 
@@ -481,7 +481,7 @@ public class CardCell extends Card {
         super.pan(event, x, y, deltaX, deltaY);
         if (!isMove()) return;
 
-        movingCard = true;
+        panCard = true;
         CellGame parent = (CellGame) getParent();
         ArrayList<CardCell> stack = parent.getStackCard().get(stackNum);
 

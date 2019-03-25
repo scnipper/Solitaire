@@ -286,6 +286,7 @@ public class SpiderGame extends BaseGame {
                         getRoot().getGameViewForName(GameScreen.class).getMenu().getTopScoreView().addScore(100);
 
                         houseCards.add(findCard);
+                        stepBackSpider.minusScore = 100;
                         stepBackSpider.fromHouse = true;
 
                         updateMoveCards(stackNum);
@@ -394,9 +395,11 @@ public class SpiderGame extends BaseGame {
     public void cancelStep() {
         if (steps.size() > 0 && isCardActionsClear()) {
             final StepBackSpider backSpider = steps.pop();
+            TopScoreView topScoreView = getRoot().getTransitObject(Menu.class).getTopScoreView();
             if (!backSpider.noDecrementStep) {
-                getRoot().getTransitObject(Menu.class).getTopScoreView().decrementStep();
+                topScoreView.decrementStep();
             }
+            topScoreView.addScore(-backSpider.minusScore);
 
 
             if (backSpider.fromHouse) {

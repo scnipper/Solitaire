@@ -13,6 +13,8 @@ public class StepBackSpider {
     public boolean fromHouse;
     public boolean noDecrementStep;
 
+    public int minusScore;
+
 
 
     public StepBackSpider(int fromStack, int toStack, int fromPos) {

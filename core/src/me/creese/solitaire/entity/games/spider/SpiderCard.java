@@ -1,10 +1,7 @@
 package me.creese.solitaire.entity.games.spider;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -103,6 +100,7 @@ public class SpiderCard extends Card {
 
         StepBackSpider stepBackSpider = new StepBackSpider(toStack, tmpDeck, posInStack);
         stepBackSpider.moveLast = moveLast;
+        stepBackSpider.minusScore = 25;
         stepBackSpider.drawBackLast = drawBackLast;
         LinkedList<StepBackSpider> steps = parent.getSteps();
 
@@ -202,13 +200,13 @@ public class SpiderCard extends Card {
         super.pan(event, x, y, deltaX, deltaY);
 
         if (!isMove()) return;
-
-        movingCard = true;
-        Array<Action> actions = getActions();
+        panCard = true;
+        getActions().clear();
+       /* Array<Action> actions = getActions();
 
         for (Action action : actions) {
             ((MoveToAction) action).finish();
-        }
+        }*/
 
         SpiderGame parent = (SpiderGame) getParent();
 
@@ -223,17 +221,27 @@ public class SpiderCard extends Card {
     @Override
     protected void touchUp(InputEvent event, float x, float y) {
 
-        if (movingCard) checkPosition();
+        if (panCard) checkPosition();
 
-        movingCard = false;
+        SpiderGame parent = (SpiderGame) getParent();
+
+        ArrayList<SpiderCard> deck = parent.getDecks().get(deckNum);
+        int next = posInStack + 1;
+
+        panCard = false;
         super.touchUp(event, x, y);
-
+        if (next < deck.size()) {
+            for (int i = next; i < deck.size(); i++) {
+                deck.get(i).setPanCard(false);
+            }
+        }
     }
 
     @Override
     public void doubleClick() {
 
-        if (!isMove() && getActions().size == 0) return;
+        System.out.println("double click isMove = "+isMove()+" actions size = "+getActions().size);
+        if (!isMove() || getActions().size > 0) return;
 
         final SpiderGame parent = (SpiderGame) getParent();
 
@@ -266,7 +274,7 @@ public class SpiderCard extends Card {
                 parent.addAction(Actions.forever(Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        if(parent.isCardActionsClear()) {
+                        if (parent.isCardActionsClear()) {
                             afterMove(finalI, tmpDeck, moveLast, drawBackLast);
                             parent.getActions().clear();
                         }
@@ -283,7 +291,7 @@ public class SpiderCard extends Card {
                 parent.addAction(Actions.forever(Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        if(parent.isCardActionsClear()) {
+                        if (parent.isCardActionsClear()) {
                             afterMove(finalSaveEmptyNum, tmpDeck, moveLast, drawBackLast);
                             parent.getActions().clear();
                         }
@@ -294,6 +302,7 @@ public class SpiderCard extends Card {
         }
 
     }
+
 
     public void setDeckNum(int addDeck) {
         deckNum = addDeck;

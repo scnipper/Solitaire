@@ -31,7 +31,7 @@ public class Card extends Actor {
     private boolean lock;
     private boolean isDrawShadow;
     private Sprite shadow;
-    protected boolean movingCard;
+    protected boolean panCard;
 
     public Card(float x, float y, CardType cardType, int numberCard, Display root) {
         this.root = root;
@@ -167,6 +167,10 @@ public class Card extends Actor {
 
     public Sprite getShadow() {
         return shadow;
+    }
+
+    public void setPanCard(boolean panCard) {
+        this.panCard = panCard;
     }
 
     @Override
