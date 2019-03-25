@@ -9,9 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 import me.creese.solitaire.entity.CardType;
+import me.creese.solitaire.entity.games.HelpShow;
 import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.screens.GameScreen;

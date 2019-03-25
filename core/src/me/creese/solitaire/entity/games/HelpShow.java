@@ -1,4 +1,4 @@
-package me.creese.solitaire.entity.games.cell;
+package me.creese.solitaire.entity.games;
 
 public class HelpShow {
     private int fromStack;

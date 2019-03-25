@@ -111,6 +111,8 @@ public class SpiderCard extends Card {
 
         } else steps.push(stepBackSpider);
 
+        parent.makeHelp();
+
     }
 
     /**
@@ -306,5 +308,9 @@ public class SpiderCard extends Card {
 
     public void setDeckNum(int addDeck) {
         deckNum = addDeck;
+    }
+
+    public int getDeckNum() {
+        return deckNum;
     }
 }

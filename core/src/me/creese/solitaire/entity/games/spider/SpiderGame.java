@@ -1,14 +1,17 @@
 package me.creese.solitaire.entity.games.spider;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import me.creese.solitaire.entity.CardType;
+import me.creese.solitaire.entity.games.HelpShow;
 import me.creese.solitaire.entity.impl.BaseGame;
 import me.creese.solitaire.entity.impl.Card;
 import me.creese.solitaire.menu.Menu;
@@ -33,6 +36,7 @@ public class SpiderGame extends BaseGame {
     private final LinkedList<StepBackSpider> steps;
     private final ArrayList<Card> houseCards;
     private boolean isStart;
+    private LinkedList<HelpShow> hints;
 
     public SpiderGame() {
         decks = new ArrayList<>();
@@ -41,6 +45,7 @@ public class SpiderGame extends BaseGame {
         houseCardPos = new Vector2();
         steps = new LinkedList<>();
         houseCards = new ArrayList<>();
+        hints = new LinkedList<>();
     }
 
     @Override
@@ -262,7 +267,7 @@ public class SpiderGame extends BaseGame {
                         stepBackSpider.moveLast = prevCard.isMove();
                         stepBackSpider.drawBackLast = prevCard.isDrawBack();
 
-                        if(prevCard.getNumberCard() != -1) {
+                        if (prevCard.getNumberCard() != -1) {
                             prevCard.setDrawBack(false);
                             prevCard.setMove(true);
                         }
@@ -380,6 +385,57 @@ public class SpiderGame extends BaseGame {
         }
 
         return true;
+    }
+
+    /**
+     * Создание подсказки
+     */
+    public void makeHelp() {
+        hints.clear();
+
+        for (int i = 0; i < decks.size() - 5; i++) {
+            ArrayList<SpiderCard> cards = decks.get(i);
+
+            for (int j = cards.size() - 1; j > 0; j--) {
+                SpiderCard card = cards.get(j);
+
+
+                SpiderCard prevCard = cards.get(j - 1);
+
+
+                if (!card.isMove() || card.isDrawBack()) continue;
+                if(!prevCard.isDrawBack() ) {
+                    if(j > 2) {
+                        if(!cards.get(j-2).isDrawBack()) continue;
+                    }
+                    HelpShow tmpHints = getOneHints(prevCard, i);
+                    if(tmpHints == null) continue;
+                }
+
+                HelpShow oneHints = getOneHints(card, i);
+                if (oneHints != null) {
+                    hints.push(oneHints);
+                }
+            }
+        }
+
+        if(hints.size() == 0) {
+            HelpShow helpShow = new HelpShow(0, 0, 0);
+            helpShow.setJustDeckHighlight(true);
+            hints.push(helpShow);
+        }
+    }
+
+    private HelpShow getOneHints(SpiderCard card, int index) {
+        for (int k = 0; k < decks.size() - 5; k++) {
+            if (index == k) continue;
+
+            if (card.tryMoveToPosition(k, true, false)) {
+                return new HelpShow(card.getDeckNum(), k, card.getPosInStack());
+
+            }
+        }
+        return null;
     }
 
     @Override
@@ -515,7 +571,72 @@ public class SpiderGame extends BaseGame {
 
     @Override
     public void showHelp() {
+        if (hints.size() > 0 && isCardActionsClear()) {
+            HelpShow helpShow = hints.pop();
 
+            System.out.println(helpShow);
+
+
+            if (helpShow.isJustDeckHighlight()) {
+
+                final AddNewCard addNewCard = newCards.get(newCards.size() - 1);
+                addNewCard.getShadow().setScale(1.1f);
+                addNewCard.getShadow().setColor(Color.YELLOW);
+
+                addNewCard.addAction(Actions.sequence(Actions.delay(0.3f),Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        addNewCard.getShadow().setScale(1f);
+                        addNewCard.getShadow().setColor(Color.BLACK);
+                    }
+                })));
+
+
+                if (hints.size() == 0) {
+                    makeHelp();
+                }
+                return;
+            }
+
+
+            ArrayList<SpiderCard> fromStack = decks.get(helpShow.getFromStack());
+            ArrayList<SpiderCard> toStack = decks.get(helpShow.getToStack());
+            SpiderCard lastToCard = toStack.get(toStack.size() - 1);
+
+            float offY = 0;
+
+            if (lastToCard.getNumberCard() != -1) {
+                offY = SPACE_BETWEEN_TWO_OPEN_CARDS;
+            }
+            for (int i = helpShow.getFromPos(); i < fromStack.size(); i++) {
+                final SpiderCard card = fromStack.get(i);
+
+                card.setDrawShadow(true);
+                card.getShadow().setScale(1.1f);
+                card.getShadow().setColor(Color.YELLOW);
+
+                MoveToAction moveToAction = Actions.moveTo(lastToCard.getX(), lastToCard.getY() - offY, 0.4f);
+                card.setZIndex(9999);
+                offY += SPACE_BETWEEN_TWO_OPEN_CARDS;
+                card.addAction(Actions.sequence(moveToAction, Actions.delay(0.15f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        card.moveToStartPos(-1, new Runnable() {
+                            @Override
+                            public void run() {
+                                card.getShadow().setScale(1);
+                                card.getShadow().setColor(Color.BLACK);
+                            }
+                        });
+                    }
+                })));
+            }
+
+            if (hints.size() == 0) {
+                System.out.println("end helps");
+                makeHelp();
+            }
+        }
     }
 
     @Override
