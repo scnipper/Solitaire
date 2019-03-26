@@ -208,6 +208,9 @@ public class SpiderGame extends BaseGame {
 
         }
         moveToPositionDeck(true);
+
+        makeHelp();
+
         return true;
     }
 
@@ -396,26 +399,27 @@ public class SpiderGame extends BaseGame {
         for (int i = 0; i < decks.size() - 5; i++) {
             ArrayList<SpiderCard> cards = decks.get(i);
 
-            for (int j = cards.size() - 1; j > 0; j--) {
+            for (int j = 1; j < cards.size(); j++) {
                 SpiderCard card = cards.get(j);
 
 
-                SpiderCard prevCard = cards.get(j - 1);
+                //SpiderCard prevCard = cards.get(j - 1);
 
 
                 if (!card.isMove() || card.isDrawBack()) continue;
-                if(!prevCard.isDrawBack() ) {
+               /* if(!prevCard.isDrawBack()  ) {
                     if(j > 2) {
                         if(!cards.get(j-2).isDrawBack()) continue;
                     }
                     HelpShow tmpHints = getOneHints(prevCard, i);
                     if(tmpHints == null) continue;
-                }
+                }*/
 
                 HelpShow oneHints = getOneHints(card, i);
                 if (oneHints != null) {
                     hints.push(oneHints);
                 }
+                break;
             }
         }
 
@@ -430,9 +434,12 @@ public class SpiderGame extends BaseGame {
         for (int k = 0; k < decks.size() - 5; k++) {
             if (index == k) continue;
 
-            if (card.tryMoveToPosition(k, true, false)) {
-                return new HelpShow(card.getDeckNum(), k, card.getPosInStack());
+            int size = decks.get(k).size();
+            if(card.getPosInStack() != size) {
+                if (card.tryMoveToPosition(k, true, false)) {
+                    return new HelpShow(card.getDeckNum(), k, card.getPosInStack());
 
+                }
             }
         }
         return null;
@@ -579,6 +586,7 @@ public class SpiderGame extends BaseGame {
 
             if (helpShow.isJustDeckHighlight()) {
 
+                if(newCards.size() == 0) return;
                 final AddNewCard addNewCard = newCards.get(newCards.size() - 1);
                 addNewCard.getShadow().setScale(1.1f);
                 addNewCard.getShadow().setColor(Color.YELLOW);
