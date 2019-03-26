@@ -241,8 +241,6 @@ public class SpiderCard extends Card {
 
     @Override
     public void doubleClick() {
-
-        System.out.println("double click isMove = "+isMove()+" actions size = "+getActions().size);
         if (!isMove() || getActions().size > 0) return;
 
         final SpiderGame parent = (SpiderGame) getParent();

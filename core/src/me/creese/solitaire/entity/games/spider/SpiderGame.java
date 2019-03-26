@@ -17,6 +17,7 @@ import me.creese.solitaire.entity.impl.Card;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.TopScoreView;
 import me.creese.solitaire.screens.GameScreen;
+import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.P;
 
 public class SpiderGame extends BaseGame {
@@ -65,9 +66,10 @@ public class SpiderGame extends BaseGame {
         addNewCard.posStack(0);
         newCards.clear();
         newCards.add(addNewCard);
+        houseCards.clear();
 
         //int dif = P.get().pref.getInteger(S.DIF_SPIDER,EASY_DIF);
-        int dif = EASY_DIF;
+        int dif = MEDIUM_DIF;
 
         switch (dif) {
             case EASY_DIF:
@@ -282,7 +284,11 @@ public class SpiderGame extends BaseGame {
                             moveCard.moveToStartPos(-1, new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (moveCard.getNumberCard() < 13) moveCard.remove();
+                                    if (moveCard.getNumberCard() < 13) {
+                                        moveCard.remove();
+                                    } else {
+                                        checkWinGame();
+                                    }
                                 }
                             });
                             cards.remove(j);
@@ -298,13 +304,25 @@ public class SpiderGame extends BaseGame {
                         stepBackSpider.fromHouse = true;
 
                         updateMoveCards(stackNum);
-                        System.out.println(" win  cards");
                         return stepBackSpider;
                     }
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Проверка на выигрыш игры
+     */
+    private void checkWinGame() {
+        System.out.println("check win game" + houseCards.size());
+
+        if (houseCards.size() == 8) {
+            getRoot().showGameView(WinScreen.class);
+        }
+
+
     }
 
     /**
@@ -394,6 +412,8 @@ public class SpiderGame extends BaseGame {
      * Создание подсказки
      */
     public void makeHelp() {
+        HelpShow lastHelp = null;
+        if (hints.size() > 0) lastHelp = hints.pop();
         hints.clear();
 
         for (int i = 0; i < decks.size() - 5; i++) {
@@ -417,13 +437,16 @@ public class SpiderGame extends BaseGame {
 
                 HelpShow oneHints = getOneHints(card, i);
                 if (oneHints != null) {
+                    if (lastHelp != null) {
+                        if (oneHints.getFromStack() == lastHelp.getToStack()) continue;
+                    }
                     hints.push(oneHints);
                 }
                 break;
             }
         }
 
-        if(hints.size() == 0) {
+        if (hints.size() == 0) {
             HelpShow helpShow = new HelpShow(0, 0, 0);
             helpShow.setJustDeckHighlight(true);
             hints.push(helpShow);
@@ -435,7 +458,7 @@ public class SpiderGame extends BaseGame {
             if (index == k) continue;
 
             int size = decks.get(k).size();
-            if(card.getPosInStack() != size) {
+            if (card.getPosInStack() != size) {
                 if (card.tryMoveToPosition(k, true, false)) {
                     return new HelpShow(card.getDeckNum(), k, card.getPosInStack());
 
@@ -443,6 +466,10 @@ public class SpiderGame extends BaseGame {
             }
         }
         return null;
+    }
+
+    private void gameOver() {
+        System.out.println("game over");
     }
 
     @Override
@@ -553,7 +580,7 @@ public class SpiderGame extends BaseGame {
                 newCards.add(newCard);
                 addActor(newCard);
 
-                printStack();
+                // printStack();
 
                 return;
             }
@@ -579,19 +606,22 @@ public class SpiderGame extends BaseGame {
     @Override
     public void showHelp() {
         if (hints.size() > 0 && isCardActionsClear()) {
-            HelpShow helpShow = hints.pop();
+            HelpShow helpShow = hints.pollLast();
 
             System.out.println(helpShow);
 
 
             if (helpShow.isJustDeckHighlight()) {
 
-                if(newCards.size() == 0) return;
+                if (newCards.size() == 0) {
+                    gameOver();
+                    return;
+                }
                 final AddNewCard addNewCard = newCards.get(newCards.size() - 1);
                 addNewCard.getShadow().setScale(1.1f);
                 addNewCard.getShadow().setColor(Color.YELLOW);
 
-                addNewCard.addAction(Actions.sequence(Actions.delay(0.3f),Actions.run(new Runnable() {
+                addNewCard.addAction(Actions.sequence(Actions.delay(0.3f), Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         addNewCard.getShadow().setScale(1f);
