@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import me.creese.solitaire.menu.CoinCounter;
 import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.Theme;
-import me.creese.solitaire.menu.ThemeItemBtn;
+import me.creese.solitaire.menu.buttons.ThemeItemBtn;
 import me.creese.solitaire.menu.buttons.StdTransparentBtn;
 import me.creese.solitaire.util.P;
 import me.creese.util.display.Display;
@@ -15,6 +15,7 @@ import me.creese.util.display.GameView;
 public class ThemesScreen extends GameView {
     private Menu menu;
     private CoinCounter coinCounter;
+    private ThemeItemBtn selectThemeItemBtn;
 
     public ThemesScreen(Display root) {
         super(new FitViewport(P.WIDTH,P.HEIGHT), root, new PolygonSpriteBatch());
@@ -24,7 +25,10 @@ public class ThemesScreen extends GameView {
 
         for (int i = 0; i < Theme.themes.size(); i++) {
             ThemeItemBtn themeItem = new ThemeItemBtn(root,Theme.themes.get(i).getPrice(),i);
-            if(i == Theme.CURR_THEME) themeItem.setColor(P.SUB_YELLOW_COLOR);
+            if(i == Theme.CURR_THEME) {
+                themeItem.setColor(P.SUB_YELLOW_COLOR);
+                selectThemeItemBtn = themeItem;
+            }
             int triple = i / 3;
             themeItem.setPosition(76+((i-triple*3)*(themeItem.getWidth()+32)),1135-(triple *(themeItem.getHeight()+32)));
             addActor(themeItem);
@@ -35,6 +39,14 @@ public class ThemesScreen extends GameView {
         stdTransparentBtn.setMode(StdTransparentBtn.Mode.EXIT);
         addActor(stdTransparentBtn);
 
+    }
+
+    public void setSelectedThemeItem(ThemeItemBtn themeItemBtn) {
+        this.selectThemeItemBtn = themeItemBtn;
+    }
+
+    public ThemeItemBtn getSelectThemeItemBtn() {
+        return selectThemeItemBtn;
     }
 
     @Override

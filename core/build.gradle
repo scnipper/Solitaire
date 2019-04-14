@@ -12,4 +12,5 @@ eclipse.project {
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: '../lib')
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

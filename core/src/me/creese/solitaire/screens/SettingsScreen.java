@@ -66,6 +66,7 @@ public class SettingsScreen extends GameView {
             addActor(menu);
             addActor(coinCounter);
         } else {
+            coinCounter.remove();
             menu.getBottomMenu().setVisible(true);
             menu.getTopScoreView().setTimeStart(true);
         }

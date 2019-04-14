@@ -28,7 +28,7 @@ public class BuyCoinsBtn extends Actor {
         this.price = price;
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
         back = prepare.getByName(FTextures.DEF_BUTTON_SETTINGS);
-        back.setColor(Theme.getCurrentTheme().getSubColor());
+
         font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         setBounds(P.WIDTH/2-back.getWidth()/2,y,back.getWidth(),back.getHeight());
         back.setPosition(getX(),getY());
@@ -40,9 +40,10 @@ public class BuyCoinsBtn extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        back.setColor(Theme.getCurrentTheme().getSubColor());
         back.draw(batch);
         FontUtil.drawText(batch,font,"+ "+plusCoin,getX()+43,getY(),0.65f, Color.WHITE,getWidth(), Align.left,false,getHeight());
-        FontUtil.drawText(batch,font,price+" руб",getX(),getY(),0.65f,P.BUY_COIN_PRICE_COLOR,getWidth()-42,Align.right,false,getHeight());
-        batch.draw(coin,getX()+245,getY()+getHeight()/2-coin.getHeight()/2);
+        FontUtil.drawText(batch,font,price+" руб",getX(),getY(),0.65f,P.BLACK_TRANSPARENT_COLOR_TEXT,getWidth()-42,Align.right,false,getHeight());
+        batch.draw(coin,getX()+245,getY()+getHeight()/2-coin.getHeight()/2.f);
     }
 }

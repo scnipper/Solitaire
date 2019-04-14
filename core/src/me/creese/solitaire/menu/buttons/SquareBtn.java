@@ -62,7 +62,7 @@ public class SquareBtn extends Actor {
 
                 break;
             case WATCH_VIDEO:
-                back.setColor(Theme.getCurrentTheme().getSubColor());
+
                 text = "Посмотреть видео";
                 setPosition(396,906);
 
@@ -70,6 +70,7 @@ public class SquareBtn extends Actor {
                 drawBottom = new DrawBottom() {
                     @Override
                     public void draw(Batch batch) {
+                        back.setColor(Theme.getCurrentTheme().getSubColor());
                         FontUtil.drawText(batch,fontBold,"+40",getX(),(getY()+getHeight())-170,0.65f,P.YELLOW_COLOR,
                                 168,Align.right);
                         batch.draw(coin,getX()+180,getY()+65);
@@ -77,7 +78,7 @@ public class SquareBtn extends Actor {
                 };
                 break;
             case INST:
-                back.setColor(Theme.getCurrentTheme().getSubColor());
+
                 text = "Наш инстаграм";
                 setPosition(716,906);
 
@@ -85,6 +86,7 @@ public class SquareBtn extends Actor {
                 drawBottom = new DrawBottom() {
                     @Override
                     public void draw(Batch batch) {
+                        back.setColor(Theme.getCurrentTheme().getSubColor());
                         batch.draw(inst,getX()+getWidth()/2-inst.getWidth()/2,getY()+51);
                     }
                 };

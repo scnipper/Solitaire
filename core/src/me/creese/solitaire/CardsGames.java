@@ -18,8 +18,10 @@ import me.creese.solitaire.screens.SettingsScreen;
 import me.creese.solitaire.screens.ThemesScreen;
 import me.creese.solitaire.screens.WinScreen;
 import me.creese.solitaire.util.P;
+import me.creese.solitaire.util.S;
 import me.creese.solitaire.util.TexturePrepare;
 import me.creese.util.display.Display;
+import me.creese.util.pref.Saves;
 
 public class CardsGames extends Display {
 
@@ -29,13 +31,14 @@ public class CardsGames extends Display {
     public void create() {
         Gdx.input.setCatchBackKey(true);
 
-        Theme.init();
 
-        setBackgroundColor(Theme.getCurrentTheme().getMainColor());
         addListGameViews(new Loading(this));
         showGameView(Loading.class);
-        P.get().pref = Gdx.app.getPreferences("cell_settings");
+        P.get().pref = new Saves("cell_settings");
 
+        Theme.CURR_THEME = P.get().pref.getInt(S.CURR_THEME);
+        Theme.init();
+        setBackgroundColor(Theme.getCurrentTheme().getMainColor());
         Pixmap pix = new Pixmap(1,1,Pixmap.Format.RGBA8888);
         pix.setColor(Color.WHITE);
         pix.fill();
@@ -60,14 +63,18 @@ public class CardsGames extends Display {
     public void dispose() {
         getTransitObject(TexturePrepare.class).dispose();
 
+
+            P.get().pref.flush();
+
+
     }
 
 
     @Override
     public void pause() {
-        if (P.get().pref != null) {
+
 
             P.get().pref.flush();
-        }
+
     }
 }

@@ -13,10 +13,13 @@ import me.creese.solitaire.menu.Menu;
 import me.creese.solitaire.menu.buttons.BuyCoinsBtn;
 import me.creese.solitaire.menu.buttons.StdTransparentBtn;
 import me.creese.solitaire.util.P;
+import me.creese.solitaire.util.S;
 import me.creese.util.display.Display;
 import me.creese.util.display.GameView;
 
 public class CoinsScreen extends GameView {
+    private final GlyphLayout glyph;
+    private final BitmapFont font;
     private ButtonsSquare buttonsSquare;
     private Menu menu;
 
@@ -33,10 +36,10 @@ public class CoinsScreen extends GameView {
         addActor(new BuyCoinsBtn(root, 3000, 65, 968));
         addActor(new BuyCoinsBtn(root, 7000, 125, 798));
 
-        final BitmapFont font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
+        font = P.get().asset.get(Loading.FONT_ROBOTO_BOLD, BitmapFont.class);
         final Texture coin = new Texture("coin.png");
 
-        final GlyphLayout glyph = new GlyphLayout();
+        glyph = new GlyphLayout();
 
         addActor(new Actor() {
             float xFont = 0;
@@ -44,8 +47,7 @@ public class CoinsScreen extends GameView {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 font.getData().setScale(0.65f);
-                glyph.setText(font, String.valueOf(P.COUNT_COIN));
-                xFont = P.WIDTH / 2 - glyph.width / 2;
+                xFont = P.WIDTH / 2.f - glyph.width / 2;
                 font.draw(batch, glyph, xFont, P.HEIGHT - 338);
                 font.getData().setScale(1f);
 
@@ -61,6 +63,9 @@ public class CoinsScreen extends GameView {
     public void addRoot(Display display) {
         super.addRoot(display);
         if (display != null) {
+            font.getData().setScale(0.65f);
+            glyph.setText(font, P.get().pref.getInt(S.COIN_COUNT,700)/7+"");
+            font.getData().setScale(1f);
             buttonsSquare = display.getTransitObject(ButtonsSquare.class);
 
             addActor(buttonsSquare);

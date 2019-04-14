@@ -30,9 +30,9 @@ public class ThemeBtn extends Actor {
         TexturePrepare prepare = root.getTransitObject(TexturePrepare.class);
 
         back = prepare.getByName(FTextures.DEF_BUTTON_SETTINGS);
-        back.setColor(Theme.getCurrentTheme().getSubColor());
 
-        setBounds(P.WIDTH/2-back.getWidth()/2,468,back.getWidth(),back.getHeight());
+
+        setBounds(P.WIDTH/2.f-back.getWidth()/2,468,back.getWidth(),back.getHeight());
         icon = new Texture("theme_btn_icon.png");
 
         addListener(new ActorGestureListener(){
@@ -47,6 +47,7 @@ public class ThemeBtn extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        back.setColor(Theme.getCurrentTheme().getSubColor());
         back.setPosition(getX(),getY());
         back.draw(batch);
         batch.draw(icon,getX()+732,getY()+getHeight()/2-icon.getHeight()/2);
